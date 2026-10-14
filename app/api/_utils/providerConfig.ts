@@ -32,6 +32,7 @@ function getBearerToken(req: NextRequest): string {
 
 function getDefaultApiUrl(provider: AIProvider): string {
   if (provider === 'deepseek') {
+    console.log(process.env.DEEPSEEK_API_URL || SENSENOVA_OPENAI_API_URL ||  DEEPSEEK_OPENAI_API_URL)
     return process.env.DEEPSEEK_API_URL || SENSENOVA_OPENAI_API_URL ||  DEEPSEEK_OPENAI_API_URL;
   }
 
@@ -40,6 +41,7 @@ function getDefaultApiUrl(provider: AIProvider): string {
 
 function getDefaultApiKey(provider: AIProvider): string {
   if (provider === 'deepseek') {
+    console.log(process.env.DEEPSEEK_API_KEY || process.env.SENSENOVA_API_KEY || '')
     return process.env.DEEPSEEK_API_KEY || process.env.SENSENOVA_API_KEY || '';
   }
  
