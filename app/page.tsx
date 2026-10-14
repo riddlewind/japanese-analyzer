@@ -555,7 +555,7 @@ export default function Home() {
         <div className="flex min-h-screen flex-col items-center justify-center p-4 transition-colors duration-200">
           <div className="mb-8 text-center">
             <h1 className="mb-3 text-3xl font-semibold tracking-wide" style={{ color: 'var(--ink)' }}>
-              {t("日本語文章解析")}
+              {t("日语翻译")}
             </h1>
             <p className="text-base" style={{ color: 'var(--ink-3)' }}>
               {t("AI驱动・深入理解日语句子结构与词义")}
