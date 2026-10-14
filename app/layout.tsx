@@ -8,7 +8,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 export const metadata: Metadata = {
-  title: "日本語文章解析器 - AI驱动",
+  title: "AI日语翻译",
   description: "AI驱动・深入理解日语句子结构与词义",
   icons: {
     icon: "/logo/logo.png",

@@ -10,7 +10,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const applyLocale = useCallback((value: Locale) => {
     document.documentElement.lang = value;
     const t = createTranslator(value);
-    document.title = t('日本語文章解析器 - AI驱动');
+    document.title = t('AI日语翻译');
     document.querySelector('meta[name="description"]')?.setAttribute('content', t('AI驱动・深入理解日语句子结构与词义'));
     updateLocale(value);
   }, []);
