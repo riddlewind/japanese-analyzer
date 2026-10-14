@@ -6,6 +6,7 @@ import type { AIProvider } from '../services/api';
 export const PROVIDER_LABELS: Record<AIProvider, string> = {
   gemini: 'Gemini',
   deepseek: 'DeepSeek',
+  sensenova: "商汤日日新"
 };
 
 interface ProviderLogoProps {
