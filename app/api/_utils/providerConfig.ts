@@ -34,7 +34,9 @@ function getDefaultApiUrl(provider: AIProvider): string {
   if (provider === 'deepseek') {
     return process.env.DEEPSEEK_API_URL ||  DEEPSEEK_OPENAI_API_URL;
   }
-
+   if (provider === 'sensenova') {
+    return process.env.SENSENOVA_API_URL || SENSENOVA_OPENAI_API_URL;
+  }
   return process.env.GEMINI_API_URL || GEMINI_OPENAI_API_URL;
 }
 
@@ -192,10 +194,7 @@ export function getStructuredResponseFormat(
   provider: AIProvider,
   kind: StructuredOutputKind
 ): Record<string, unknown> {
-  if (provider === 'deepseek') {
-    return { type: 'json_object' };
-  }
-    if (provider === 'sensenova') {
+  if (provider === 'deepseek' || provider === 'sensenova') {
     return { type: 'json_object' };
   }
 
