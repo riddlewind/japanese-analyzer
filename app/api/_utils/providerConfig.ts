@@ -32,7 +32,7 @@ function getBearerToken(req: NextRequest): string {
 
 function getDefaultApiUrl(provider: AIProvider): string {
   if (provider === 'deepseek') {
-    return SENSENOVA_OPENAI_API_URL || process.env.DEEPSEEK_API_URL ||  DEEPSEEK_OPENAI_API_URL;
+    return process.env.DEEPSEEK_API_URL ||  DEEPSEEK_OPENAI_API_URL;
   }
 
   return process.env.GEMINI_API_URL || GEMINI_OPENAI_API_URL;
