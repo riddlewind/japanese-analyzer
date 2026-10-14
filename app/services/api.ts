@@ -20,6 +20,7 @@ export {
   DEEPSEEK_VISION_MODEL_NAME,
   DEEPSEEK_MODEL_OPTIONS,
   GEMINI_MODEL_OPTIONS,
+  SENSENOVA_MODEL_OPTIONS,
   getImageRecognitionModelName,
   getModelName,
   normalizeAIModel,
@@ -30,6 +31,7 @@ export type {
   AIProvider,
   DeepSeekModelName,
   GeminiModelName,
+  SenseNovaModelName,
 } from '../lib/aiModels';
 
 export interface TokenData {
@@ -82,6 +84,7 @@ export interface StoredAISettings {
   aiModel: AIModelName;
   geminiApiKey: string;
   deepseekApiKey: string;
+  sensenovaApiKey: string;
   deepseekThinkingEnabled: boolean;
 }
 
@@ -147,6 +150,7 @@ export function loadAISettingsFromStorage(storage: StorageLike): StoredAISetting
     aiModel: normalizeAIModel(aiProvider, storage.getItem('aiModel')),
     geminiApiKey: geminiApiKey || '',
     deepseekApiKey: storage.getItem('deepseekApiKey') || '',
+    sensenovaApiKey: storage.getItem('sensenovaApiKey') || '',
     deepseekThinkingEnabled: false,
   };
 }

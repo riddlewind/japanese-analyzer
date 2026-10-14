@@ -770,6 +770,7 @@ assert.deepStrictEqual(migratedSettings, {
   aiModel: 'deepseek-flash',
   geminiApiKey: 'legacy-gemini-key',
   deepseekApiKey: 'deepseek-key',
+  sensenovaApiKey: '',
   deepseekThinkingEnabled: false,
 });
 assert.strictEqual(migratedStorage.getItem('geminiApiKey'), 'legacy-gemini-key');
@@ -784,6 +785,7 @@ assert.strictEqual(defaultSettings.aiProvider, 'deepseek');
 assert.strictEqual(defaultSettings.aiModel, 'deepseek-flash');
 assert.strictEqual(defaultSettings.geminiApiKey, '');
 assert.strictEqual(defaultSettings.deepseekApiKey, '');
+assert.strictEqual(defaultSettings.sensenovaApiKey, '');
 assert.strictEqual(defaultSettings.deepseekThinkingEnabled, false);
 
 const geminiLiteStorage = new MemoryStorage({

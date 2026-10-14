@@ -5,7 +5,7 @@ export type SenseNovaModelName = 'sensenova-6.8-flash-lite';
 export type AIModelName = SenseNovaModelName | GeminiModelName | DeepSeekModelName;
 export type ImageRecognitionModelName = SenseNovaModelName | GeminiModelName | typeof DEEPSEEK_VISION_MODEL_NAME;
 
-export const DEFAULT_AI_PROVIDER: AIProvider = 'deepseek';
+export const DEFAULT_AI_PROVIDER: AIProvider = 'sensenova';
 export const GEMINI_MODEL_NAME: GeminiModelName = 'gemini-flash-latest';
 export const DEEPSEEK_MODEL_NAME: DeepSeekModelName = 'deepseek-flash';
 export const DEEPSEEK_VISION_MODEL_NAME = DEEPSEEK_MODEL_NAME;

@@ -64,6 +64,7 @@ export default function Home() {
   const [aiModel, setAiModel] = useState<AIModelName>(getModelName(DEFAULT_AI_PROVIDER));
   const [geminiApiKey, setGeminiApiKey] = useState('');
   const [deepseekApiKey, setDeepseekApiKey] = useState('');
+  const [sensenovaApiKey, setSensenovaApiKey] = useState('');
   const [deepseekThinkingEnabled, setDeepseekThinkingEnabled] = useState(false);
   const [hasDeepseekReasoning, setHasDeepseekReasoning] = useState(false);
   const hasDeepseekReasoningRef = useRef(false);
@@ -84,7 +85,12 @@ export default function Home() {
   const [requiresAuth, setRequiresAuth] = useState(false);
   const [authError, setAuthError] = useState('');
 
-  const userApiKey = aiProvider === 'gemini' ? geminiApiKey : deepseekApiKey;
+  const apiKeyByProvider: Record<AIProvider, string> = {
+  gemini: geminiApiKey,
+  deepseek: deepseekApiKey,
+  sensenova: sensenovaApiKey,
+  };
+  const userApiKey = apiKeyByProvider[aiProvider];
 
   // 选中词汇（右侧详情面板 / 移动端模态）
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -168,6 +174,7 @@ export default function Home() {
     setAiModel(storedAISettings.aiModel);
     setGeminiApiKey(storedAISettings.geminiApiKey);
     setDeepseekApiKey(storedAISettings.deepseekApiKey);
+    setSensenovaApiKey(storedAISettings.sensenovaApiKey);
     setDeepseekThinkingEnabled(storedAISettings.deepseekThinkingEnabled);
     setTtsProvider(storedTtsProvider);
 
@@ -184,12 +191,14 @@ export default function Home() {
     geminiApiKey: string;
     deepseekApiKey: string;
     deepseekThinkingEnabled: boolean;
+    sensenovaApiKey: string;
     useStream: boolean;
   }) => {
     browserStorage.setItem('aiProvider', settings.aiProvider);
     browserStorage.setItem('aiModel', settings.aiModel);
     browserStorage.setItem('geminiApiKey', settings.geminiApiKey);
     browserStorage.setItem('deepseekApiKey', settings.deepseekApiKey);
+    browserStorage.setItem('sensenovaApiKey', settings.sensenovaApiKey);  // ← 加
     browserStorage.setItem('deepseekThinkingEnabled', settings.deepseekThinkingEnabled.toString());
     browserStorage.setItem('useStream', settings.useStream.toString());
     browserStorage.removeItem('geminiApiUrl');
@@ -203,6 +212,7 @@ export default function Home() {
     setAiModel(settings.aiModel);
     setGeminiApiKey(settings.geminiApiKey);
     setDeepseekApiKey(settings.deepseekApiKey);
+    setSensenovaApiKey(settings.sensenovaApiKey);
     setDeepseekThinkingEnabled(settings.deepseekThinkingEnabled);
     setUseStream(settings.useStream);
     reasoningTextStore.reset();
@@ -701,6 +711,7 @@ export default function Home() {
           aiModel={aiModel}
           geminiApiKey={geminiApiKey}
           deepseekApiKey={deepseekApiKey}
+          sensenovaApiKey={sensenovaApiKey}
           useStream={useStream}
           onSaveSettings={handleSaveSettings}
           isModalOpen={isSettingsModalOpen}
