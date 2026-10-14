@@ -166,7 +166,6 @@ export async function proxyOpenAICompatibleRequest(options: {
   | { ok: true; response: Response }
   | { ok: false; status: number; error: ParsedUpstreamError }
 > {
-  console.log("proxyOpenAICompatibleRequest" + options.apiKey)
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${options.apiKey}`,

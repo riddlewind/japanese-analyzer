@@ -815,9 +815,9 @@ async function runOpenAIProxyErrorBodyTests() {
       let deadline: ReturnType<typeof setTimeout> | undefined;
       const stalled = await Promise.race([
         proxyOpenAICompatibleRequest({
-          url: 'https://upstream.example/chat/completions',
-          apiKey: 'test-key',
-          payload: { model: 'test', stream },
+          url: 'https://token.sensenova.cn/v1/chat/completions',
+          apiKey: '',
+          payload: { model: 'deepseek-flash', stream },
           errorBodyTimeoutMs: 20,
         }),
         new Promise<never>((_resolve, reject) => {
