@@ -40,9 +40,11 @@ function getDefaultApiUrl(provider: AIProvider): string {
 
 function getDefaultApiKey(provider: AIProvider): string {
   if (provider === 'deepseek') {
-    return process.env.SENSENOVA_API_KEY || process.env.DEEPSEEK_API_KEY || '';
+    return process.env.DEEPSEEK_API_KEY || '';
   }
- 
+  if (provider === 'sensenova') {
+    return process.env.SENSENOVA_API_KEY || '';
+  }
   return process.env.GEMINI_API_KEY || '';
 }
 
@@ -193,6 +195,9 @@ export function getStructuredResponseFormat(
   if (provider === 'deepseek') {
     return { type: 'json_object' };
   }
+    if (provider === 'sensenova') {
+    return { type: 'json_object' };
+  }
 
   const structuredOutput = structuredOutputSchemas[kind];
   return {
@@ -227,7 +232,14 @@ export function withProviderControls(
       ...(thinkingEnabled ? { reasoning_effort: 'high' } : {}),
     };
   }
-
+  if (provider === 'sensenova') {
+    return {
+      ...payload,
+      ...responseFormat,
+      // 不要注入 thinking，商汤网关会 403
+      // 如果需要控制思考深度，用 reasoning_effort
+    };
+  }
   return {
     ...payload,
     ...responseFormat,

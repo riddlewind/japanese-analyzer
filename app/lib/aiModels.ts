@@ -1,8 +1,9 @@
-export type AIProvider = 'gemini' | 'deepseek';
+export type AIProvider = 'gemini' | 'deepseek' | 'sensenova';
 export type GeminiModelName = 'gemini-flash-latest' | 'gemini-flash-lite-latest';
 export type DeepSeekModelName = 'deepseek-flash';
-export type AIModelName = GeminiModelName | DeepSeekModelName;
-export type ImageRecognitionModelName = GeminiModelName | typeof DEEPSEEK_VISION_MODEL_NAME;
+export type SenseNovaModelName = 'sensenova-6.8-flash-lite';
+export type AIModelName = SenseNovaModelName | GeminiModelName | DeepSeekModelName;
+export type ImageRecognitionModelName = SenseNovaModelName | GeminiModelName | typeof DEEPSEEK_VISION_MODEL_NAME;
 
 export const DEFAULT_AI_PROVIDER: AIProvider = 'deepseek';
 export const GEMINI_MODEL_NAME: GeminiModelName = 'gemini-flash-latest';
@@ -10,9 +11,10 @@ export const DEEPSEEK_MODEL_NAME: DeepSeekModelName = 'deepseek-flash';
 export const DEEPSEEK_VISION_MODEL_NAME = DEEPSEEK_MODEL_NAME;
 export const GEMINI_MODEL_OPTIONS: GeminiModelName[] = ['gemini-flash-latest', 'gemini-flash-lite-latest'];
 export const DEEPSEEK_MODEL_OPTIONS: DeepSeekModelName[] = ['deepseek-flash'];
-
+export const SENSENOVA_MODEL_NAME: SenseNovaModelName = 'sensenova-6.8-flash-lite';
+export const SENSENOVA_MODEL_OPTIONS: SenseNovaModelName[] = ['sensenova-6.8-flash-lite'];
 export function normalizeAIProvider(value?: unknown): AIProvider {
-  return value === 'gemini' || value === 'deepseek' ? value : DEFAULT_AI_PROVIDER;
+  return value === 'sensenova' || value === 'gemini' || value === 'deepseek' ? value : DEFAULT_AI_PROVIDER;
 }
 
 export function normalizeAIModel(
@@ -25,6 +27,12 @@ export function normalizeAIModel(
     return DEEPSEEK_MODEL_OPTIONS.includes(model as DeepSeekModelName)
       ? model as DeepSeekModelName
       : DEEPSEEK_MODEL_NAME;
+  }
+  
+  if (provider === 'sensenova') {
+    return SENSENOVA_MODEL_OPTIONS.includes(model as SenseNovaModelName)
+      ? model as SenseNovaModelName
+      : SENSENOVA_MODEL_NAME;
   }
 
   if (model === 'gemini-3.7-flash') return 'gemini-flash-latest';
@@ -46,7 +54,9 @@ export function getImageRecognitionModelName(
   provider: AIProvider = DEFAULT_AI_PROVIDER,
   model?: unknown
 ): ImageRecognitionModelName {
-  return provider === 'deepseek'
-    ? DEEPSEEK_VISION_MODEL_NAME
-    : normalizeAIModel(provider, model) as GeminiModelName;
+  if (provider === 'deepseek') return DEEPSEEK_VISION_MODEL_NAME;
+  if (provider === 'sensenova') {
+    return normalizeAIModel('sensenova', model) as SenseNovaModelName;
+  }
+  return normalizeAIModel('gemini', model) as GeminiModelName;
 }
