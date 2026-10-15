@@ -56,11 +56,13 @@
 
 | 用途 | 默认 | 可选 |
 | --- | --- | --- |
-| 解析、翻译、释义 | DeepSeek `deepseek-flash` | Gemini `gemini-flash-latest` / `gemini-flash-lite-latest` |
+| 解析、翻译、释义 | 商汤日日新 `sensenova-6.8-flash-lite` | DeepSeek `deepseek-flash` / Gemini `gemini-flash-latest`、`gemini-flash-lite-latest` / 七牛云 `moonshotai/kimi-k3-free` |
 | 图片识别 | 与所选文本模型一致 | — |
 | 朗读 | Edge TTS | Gemini TTS（需要 Gemini Key） |
 
 服务器配置的 Key 供所有访客使用；用户也可以在设置里填自己的 Key，保存在自己的浏览器里，请求时经本应用服务端转发给模型服务商。
+
+每次请求只会使用「该请求所选供应商」自己的 Key，不会跨供应商回退——所以要确保每个想在界面上选用的供应商都配了对应的 Key（默认供应商是商汤日日新，对应 `SENSENOVA_API_KEY`）。
 
 ## 快速开始
 
@@ -73,10 +75,10 @@ npm ci
 cp .env.example .env.local   # Windows：Copy-Item .env.example .env.local
 ```
 
-在 `.env.local` 里至少填一个 Key，然后启动：
+在 `.env.local` 里填上默认供应商的 Key（默认是商汤日日新），然后启动：
 
 ```env
-DEEPSEEK_API_KEY=your_deepseek_api_key
+SENSENOVA_API_KEY=your_sensenova_api_key
 ```
 
 ```bash
@@ -89,9 +91,11 @@ npm run dev
 
 | 变量 | 说明 |
 | --- | --- |
-| `DEEPSEEK_API_KEY` | 推荐。默认的解析、翻译与图片识别 |
+| `SENSENOVA_API_KEY` | 默认供应商（商汤日日新）的 Key。应用默认走这个，至少填它才能开箱可用 |
+| `DEEPSEEK_API_KEY` | 可选。DeepSeek 的解析、翻译与图片识别 |
 | `GEMINI_API_KEY` | 可选。Gemini 文本模型、图片识别与 Gemini TTS |
-| `DEEPSEEK_API_URL` / `GEMINI_API_URL` | 可选。OpenAI 兼容接口地址，留空用官方地址 |
+| `QINIU_API_KEY` | 可选。七牛云 AI 推理平台 |
+| `DEEPSEEK_API_URL` / `GEMINI_API_URL` / `SENSENOVA_API_URL` / `QINIU_API_URL` | 可选。OpenAI 兼容接口地址，留空用官方地址 |
 | `CODE` | 可选。访问密码，留空则不需要密码 |
 | `NEXT_PUBLIC_UMAMI_SRC` / `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | 可选。两个都填写后启用 Umami 统计 |
 
@@ -150,8 +154,10 @@ docker run -d \
   --name japanese-analyzer \
   --restart unless-stopped \
   -p 3002:3002 \
-  -e DEEPSEEK_API_KEY="your_deepseek_api_key" \
+  -e SENSENOVA_API_KEY="your_sensenova_api_key" \
+  -e DEEPSEEK_API_KEY="" \
   -e GEMINI_API_KEY="" \
+  -e QINIU_API_KEY="" \
   -e CODE="" \
   howenhowen/japanese-analyzer:latest
 ```

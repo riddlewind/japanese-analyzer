@@ -18,6 +18,8 @@ import {
   getTtsModelName,
   getRequestProviderPayload,
   loadAISettingsFromStorage,
+  QINIU_MODEL_NAME,
+  QINIU_MODEL_OPTIONS,
   normalizeAIModel,
   normalizeAIProvider,
   parseWordDetailResponseContent,
@@ -136,21 +138,31 @@ assert.deepStrictEqual(
   '完成态应合并连续空行并按段落生成虚拟块'
 );
 
-assert.strictEqual(DEFAULT_AI_PROVIDER, 'deepseek');
-assert.strictEqual(SERVER_DEFAULT_AI_PROVIDER, 'deepseek');
-assert.strictEqual(getModelName(), 'deepseek-flash');
+assert.strictEqual(DEFAULT_AI_PROVIDER, 'sensenova');
+assert.strictEqual(SERVER_DEFAULT_AI_PROVIDER, 'sensenova');
+assert.strictEqual(getModelName(), 'sensenova-6.8-flash-lite');
 assert.strictEqual(getTtsModelName('edge'), 'edge-tts');
 assert.strictEqual(getTtsModelName('gemini'), 'gemini-3.1-flash-tts-preview');
 assert.deepStrictEqual(GEMINI_MODEL_OPTIONS, ['gemini-flash-latest', 'gemini-flash-lite-latest']);
 assert.deepStrictEqual(DEEPSEEK_MODEL_OPTIONS, ['deepseek-flash']);
+assert.deepStrictEqual(QINIU_MODEL_OPTIONS, ['moonshotai/kimi-k3-free']);
+assert.strictEqual(QINIU_MODEL_NAME, 'moonshotai/kimi-k3-free');
 assert.strictEqual(DEEPSEEK_VISION_MODEL_NAME, 'deepseek-flash');
 assert.strictEqual(getImageRecognitionModelName('deepseek'), DEEPSEEK_VISION_MODEL_NAME);
 assert.strictEqual(getImageRecognitionModelName('deepseek', 'deepseek-flash'), DEEPSEEK_VISION_MODEL_NAME);
 assert.strictEqual(getImageRecognitionModelName('gemini'), 'gemini-flash-latest');
 assert.strictEqual(getImageRecognitionModelName('gemini', 'gemini-flash-lite-latest'), 'gemini-flash-lite-latest');
+assert.strictEqual(getImageRecognitionModelName('sensenova'), 'sensenova-6.8-flash-lite');
+assert.strictEqual(getImageRecognitionModelName('qiniu'), QINIU_MODEL_NAME);
+assert.strictEqual(
+  getImageRecognitionModelName('qiniu', 'gemini-flash-latest'),
+  QINIU_MODEL_NAME,
+  '七牛供应商的图片识别必须使用七牛自己的模型名，不能落到 Gemini 分支'
+);
 assert.strictEqual(normalizeAIProvider('gemini'), 'gemini');
 assert.strictEqual(normalizeAIProvider('deepseek'), 'deepseek');
-assert.strictEqual(normalizeAIProvider('unknown'), 'deepseek');
+assert.strictEqual(normalizeAIProvider('qiniu'), 'qiniu');
+assert.strictEqual(normalizeAIProvider('unknown'), 'sensenova');
 assert.strictEqual(normalizeAIModel('deepseek', 'deepseek-flash'), 'deepseek-flash');
 assert.strictEqual(normalizeAIModel('deepseek', 'unknown'), 'deepseek-flash');
 for (const legacyModel of ['deepseek-v4-flash', 'deepseek-v4-pro', 'deepseek-v4-flash-vision-exp']) {
@@ -161,7 +173,8 @@ assert.strictEqual(normalizeAIModel('gemini', 'gemini-flash-lite-latest'), 'gemi
 assert.strictEqual(normalizeAIModel('gemini', 'deepseek-flash'), 'gemini-flash-latest');
 assert.strictEqual(normalizeServerAIProvider('gemini'), 'gemini');
 assert.strictEqual(normalizeServerAIProvider('deepseek'), 'deepseek');
-assert.strictEqual(normalizeServerAIProvider('unknown'), 'deepseek');
+assert.strictEqual(normalizeServerAIProvider('qiniu'), 'qiniu');
+assert.strictEqual(normalizeServerAIProvider('unknown'), 'sensenova');
 assert.strictEqual(getModelName('deepseek'), 'deepseek-flash');
 assert.strictEqual(getModelName('deepseek', 'deepseek-v4-pro'), 'deepseek-flash');
 assert.strictEqual(getModelName('gemini', 'gemini-flash-lite-latest'), 'gemini-flash-lite-latest');
@@ -406,8 +419,18 @@ assert.deepStrictEqual(getRequestProviderPayload('deepseek', 'deepseek-v4-pro'),
 });
 
 assert.deepStrictEqual(getRequestProviderPayload(), {
-  provider: 'deepseek',
-  model: 'deepseek-flash',
+  provider: 'sensenova',
+  model: 'sensenova-6.8-flash-lite',
+});
+
+assert.deepStrictEqual(getRequestProviderPayload('qiniu'), {
+  provider: 'qiniu',
+  model: 'moonshotai/kimi-k3-free',
+});
+
+assert.deepStrictEqual(getRequestProviderPayload('qiniu', 'moonshotai/kimi-other'), {
+  provider: 'qiniu',
+  model: 'moonshotai/kimi-k3-free',
 });
 
 assert.deepStrictEqual(withProviderControls('gemini', { model: 'gemini-flash-latest' }), {
@@ -444,6 +467,19 @@ assert.deepStrictEqual(withProviderControls(
 
 assert.deepStrictEqual(getStructuredResponseFormat('deepseek', 'analysisTokens'), {
   type: 'json_object',
+});
+
+assert.deepStrictEqual(getStructuredResponseFormat('qiniu', 'analysisTokens'), {
+  type: 'json_object',
+});
+
+assert.deepStrictEqual(withProviderControls(
+  'qiniu',
+  { model: 'moonshotai/kimi-k3-free' },
+  { structuredOutput: 'analysisTokens' }
+), {
+  model: 'moonshotai/kimi-k3-free',
+  response_format: { type: 'json_object' },
 });
 
 const geminiAnalysisResponseFormat = getStructuredResponseFormat('gemini', 'analysisTokens');
@@ -771,6 +807,7 @@ assert.deepStrictEqual(migratedSettings, {
   geminiApiKey: 'legacy-gemini-key',
   deepseekApiKey: 'deepseek-key',
   sensenovaApiKey: '',
+  qiniuApiKey: '',
   deepseekThinkingEnabled: false,
 });
 assert.strictEqual(migratedStorage.getItem('geminiApiKey'), 'legacy-gemini-key');
@@ -781,11 +818,12 @@ const defaultStorage = new MemoryStorage({
   aiProvider: 'unknown',
 });
 const defaultSettings = loadAISettingsFromStorage(defaultStorage);
-assert.strictEqual(defaultSettings.aiProvider, 'deepseek');
-assert.strictEqual(defaultSettings.aiModel, 'deepseek-flash');
+assert.strictEqual(defaultSettings.aiProvider, 'sensenova');
+assert.strictEqual(defaultSettings.aiModel, 'sensenova-6.8-flash-lite');
 assert.strictEqual(defaultSettings.geminiApiKey, '');
 assert.strictEqual(defaultSettings.deepseekApiKey, '');
 assert.strictEqual(defaultSettings.sensenovaApiKey, '');
+assert.strictEqual(defaultSettings.qiniuApiKey, '');
 assert.strictEqual(defaultSettings.deepseekThinkingEnabled, false);
 
 const geminiLiteStorage = new MemoryStorage({

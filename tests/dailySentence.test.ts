@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { buildDailySentencePrompt, validateDailySentence } from '../app/api/_utils/dailySentence';
+import { buildDailySentencePrompt, getProviderFallbackOrder, validateDailySentence } from '../app/api/_utils/dailySentence';
+import { DEFAULT_AI_PROVIDER } from '../app/lib/aiModels';
 import {
   DAILY_SENTENCES,
   getDayNumber,
@@ -39,5 +40,12 @@ assert.notEqual(today, buildDailySentencePrompt('2026-09-25'));
 assert.match(today, /2026-09-24/);
 assert.match(today, /季节是秋/);
 assert.match(buildDailySentencePrompt('2026-01-10'), /季节是冬/);
+
+// 服务器自发调用时的供应商回退链：默认供应商必须排第一，四家都要覆盖且不重复。
+// 历史上这里只认 gemini/deepseek，默认供应商换成商汤后「每日一句」直接取不到 Key。
+const fallbackOrder = getProviderFallbackOrder();
+assert.equal(fallbackOrder[0], DEFAULT_AI_PROVIDER, '默认供应商必须排在回退链首位');
+assert.deepEqual([...fallbackOrder].sort(), ['deepseek', 'gemini', 'qiniu', 'sensenova']);
+assert.equal(new Set(fallbackOrder).size, fallbackOrder.length, '回退链不应有重复项');
 
 console.log('Daily sentence tests passed');

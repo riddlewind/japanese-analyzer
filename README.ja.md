@@ -58,11 +58,13 @@
 
 | 用途 | デフォルト | 選択可能 |
 | --- | --- | --- |
-| 解析・翻訳・解説 | DeepSeek `deepseek-flash` | Gemini `gemini-flash-latest` / `gemini-flash-lite-latest` |
+| 解析・翻訳・解説 | 商湯日日新 `sensenova-6.8-flash-lite` | DeepSeek `deepseek-flash` / Gemini `gemini-flash-latest`・`gemini-flash-lite-latest` / Qiniu（七牛雲）`moonshotai/kimi-k3-free` |
 | 画像の文字認識 | 選択中のテキストモデルと同じ | — |
 | 読み上げ | Edge TTS | Gemini TTS（Gemini キーが必要） |
 
 サーバーに設定したキーはすべての訪問者が共有します。ユーザーは設定画面で自分のキーを入力することもでき、キーはそのブラウザに保存され、リクエスト時に本アプリのサーバーを経由してモデル提供元へ送られます。
+
+リクエストは「そのリクエストで選択された提供元」のキーのみを使用し、提供元をまたいだフォールバックは行いません。使いたい提供元のキーを必ず設定してください（デフォルトは商湯日日新、つまり `SENSENOVA_API_KEY`）。
 
 ## クイックスタート
 
@@ -75,10 +77,10 @@ npm ci
 cp .env.example .env.local   # Windows：Copy-Item .env.example .env.local
 ```
 
-`.env.local` にキーを 1 つ以上設定してから起動します：
+`.env.local` にデフォルトの提供元（商湯日日新）のキーを設定してから起動します：
 
 ```env
-DEEPSEEK_API_KEY=your_deepseek_api_key
+SENSENOVA_API_KEY=your_sensenova_api_key
 ```
 
 ```bash
@@ -91,9 +93,11 @@ npm run dev
 
 | 変数 | 説明 |
 | --- | --- |
-| `DEEPSEEK_API_KEY` | 推奨。デフォルトの解析・翻訳・画像認識 |
+| `SENSENOVA_API_KEY` | デフォルトの提供元（商湯日日新）のキー。アプリは既定でこれを使うため、最低限これを設定してください |
+| `DEEPSEEK_API_KEY` | 任意。DeepSeek の解析・翻訳・画像認識 |
 | `GEMINI_API_KEY` | 任意。Gemini テキストモデル・画像認識・Gemini TTS |
-| `DEEPSEEK_API_URL` / `GEMINI_API_URL` | 任意。OpenAI 互換エンドポイント。空欄なら公式のもの |
+| `QINIU_API_KEY` | 任意。Qiniu（七牛雲）AI 推論プラットフォーム |
+| `DEEPSEEK_API_URL` / `GEMINI_API_URL` / `SENSENOVA_API_URL` / `QINIU_API_URL` | 任意。OpenAI 互換エンドポイント。空欄なら公式のもの |
 | `CODE` | 任意。アクセス用パスワード。空欄ならパスワードなし |
 | `NEXT_PUBLIC_UMAMI_SRC` / `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | 任意。両方設定すると Umami 解析が有効になります |
 
@@ -152,8 +156,10 @@ docker run -d \
   --name japanese-analyzer \
   --restart unless-stopped \
   -p 3002:3002 \
-  -e DEEPSEEK_API_KEY="your_deepseek_api_key" \
+  -e SENSENOVA_API_KEY="your_sensenova_api_key" \
+  -e DEEPSEEK_API_KEY="" \
   -e GEMINI_API_KEY="" \
+  -e QINIU_API_KEY="" \
   -e CODE="" \
   howenhowen/japanese-analyzer:latest
 ```

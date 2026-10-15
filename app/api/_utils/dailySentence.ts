@@ -48,9 +48,19 @@ const DISALLOWED_SENTENCE_CHARS = /[0-9０-９A-Za-zＡ-Ｚａ-ｚ「」『』�
 
 export class DailySentenceUnavailableError extends Error {}
 
+// 服务器自发调用没有请求上下文，只能按「哪家配了服务器 Key 就用哪家」来挑：
+// 先默认供应商，再按下面的顺序回退，避免默认供应商没配 Key 时整句功能直接失效。
+const PROVIDER_FALLBACK_ORDER: AIProvider[] = ['sensenova', 'deepseek', 'gemini', 'qiniu'];
+
+export function getProviderFallbackOrder(): AIProvider[] {
+  return [
+    DEFAULT_AI_PROVIDER,
+    ...PROVIDER_FALLBACK_ORDER.filter((provider) => provider !== DEFAULT_AI_PROVIDER),
+  ];
+}
+
 function pickProvider() {
-  const providers: AIProvider[] = DEFAULT_AI_PROVIDER === 'deepseek' ? ['deepseek', 'gemini'] : ['gemini', 'deepseek'];
-  for (const provider of providers) {
+  for (const provider of getProviderFallbackOrder()) {
     const config = resolveServerProviderConfig(provider);
     if (config.apiKey) return config;
   }

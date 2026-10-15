@@ -2,7 +2,7 @@
 
 import { useLanguage } from '../contexts/LanguageContext';
 import { useEffect, useState } from 'react';
-import { DEEPSEEK_MODEL_OPTIONS, GEMINI_MODEL_OPTIONS, SENSENOVA_MODEL_OPTIONS, getModelName, type AIModelName, type AIProvider } from '../services/api';
+import { DEEPSEEK_MODEL_OPTIONS, GEMINI_MODEL_OPTIONS, QINIU_MODEL_OPTIONS, SENSENOVA_MODEL_OPTIONS, getModelName, type AIModelName, type AIProvider } from '../services/api';
 import { Icon } from './Icons';
 import { ProviderLogo, PROVIDER_LABELS } from './ProviderLogo';
 import { Switch } from '@/components/ui/switch';
@@ -13,6 +13,7 @@ interface SettingsPayload {
   geminiApiKey: string;
   deepseekApiKey: string;
   sensenovaApiKey: string;
+  qiniuApiKey: string;
   deepseekThinkingEnabled: boolean;
   useStream: boolean;
 }
@@ -23,6 +24,7 @@ interface SettingsModalProps {
   geminiApiKey: string;
   deepseekApiKey: string;
   sensenovaApiKey: string;
+  qiniuApiKey: string;
   useStream: boolean;
   onSaveSettings: (settings: SettingsPayload) => void;
   isModalOpen: boolean;
@@ -35,6 +37,7 @@ export default function SettingsModal({
   geminiApiKey,
   deepseekApiKey,
   sensenovaApiKey,
+  qiniuApiKey,
   useStream,
   onSaveSettings,
   isModalOpen,
@@ -46,6 +49,7 @@ export default function SettingsModal({
   const [geminiKey, setGeminiKey] = useState(geminiApiKey);
   const [deepseekKey, setDeepseekKey] = useState(deepseekApiKey);
   const [sensenovaKey, setSensenovaKey]= useState(sensenovaApiKey);
+  const [qiniuKey, setQiniuKey]= useState(qiniuApiKey);
   const [streamEnabled, setStreamEnabled] = useState(useStream);
   const [status, setStatus] = useState('');
 
@@ -55,9 +59,10 @@ export default function SettingsModal({
     setGeminiKey(geminiApiKey);
     setDeepseekKey(deepseekApiKey);
     setSensenovaKey(sensenovaApiKey);
+    setQiniuKey(qiniuApiKey);
     setStreamEnabled(useStream);
     setStatus('');
-  }, [aiProvider, aiModel, geminiApiKey, deepseekApiKey, sensenovaApiKey, useStream, isModalOpen]);
+  }, [aiProvider, aiModel, geminiApiKey, deepseekApiKey, sensenovaApiKey, qiniuApiKey, useStream, isModalOpen]);
 
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -69,6 +74,7 @@ export default function SettingsModal({
   gemini: geminiKey,
   deepseek: deepseekKey,
   sensenova: sensenovaKey,
+  qiniu: qiniuKey,
   };
   const currentApiKey = apiKeyByProvider[selectedProvider];
   const currentModelName = getModelName(selectedProvider, selectedModel);
@@ -76,12 +82,14 @@ export default function SettingsModal({
   gemini: setGeminiKey,
   deepseek: setDeepseekKey,
   sensenova: setSensenovaKey,
+  qiniu: setQiniuKey,
   };
   const setCurrentApiKey = setApiKeyByProvider[selectedProvider];
   const modelOptionsByProvider: Record<AIProvider, readonly string[]> = {
   gemini: GEMINI_MODEL_OPTIONS,
   deepseek: DEEPSEEK_MODEL_OPTIONS,
   sensenova: SENSENOVA_MODEL_OPTIONS,
+  qiniu: QINIU_MODEL_OPTIONS,
   };
   const currentModelOptions = modelOptionsByProvider[selectedProvider];
 
@@ -92,6 +100,7 @@ export default function SettingsModal({
       geminiApiKey: geminiKey.trim(),
       deepseekApiKey: deepseekKey.trim(),
       sensenovaApiKey: sensenovaKey.trim(),
+      qiniuApiKey: qiniuKey.trim(),
       deepseekThinkingEnabled: false,
       useStream: streamEnabled,
     });
@@ -133,8 +142,8 @@ export default function SettingsModal({
             <label className="mb-2 block text-sm font-medium" style={{ color: 'var(--ink-2)' }}>
               {t("模型服务")}
             </label>
-            <div className="segmented-control grid grid-cols-3 gap-1 rounded-[12px] p-1">
-              {(['gemini', 'deepseek', 'sensenova'] as AIProvider[]).map((provider) => {
+            <div className="segmented-control grid grid-cols-2 gap-1 rounded-[12px] p-1 sm:grid-cols-4">
+              {(['gemini', 'deepseek', 'sensenova', 'qiniu'] as AIProvider[]).map((provider) => {
                 const active = selectedProvider === provider;
                 return (
                   <button

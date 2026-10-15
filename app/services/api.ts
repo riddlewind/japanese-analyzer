@@ -21,6 +21,8 @@ export {
   DEEPSEEK_MODEL_OPTIONS,
   GEMINI_MODEL_OPTIONS,
   SENSENOVA_MODEL_OPTIONS,
+  QINIU_MODEL_NAME,
+  QINIU_MODEL_OPTIONS,
   getImageRecognitionModelName,
   getModelName,
   normalizeAIModel,
@@ -32,6 +34,7 @@ export type {
   DeepSeekModelName,
   GeminiModelName,
   SenseNovaModelName,
+  QiniuModelName,
 } from '../lib/aiModels';
 
 export interface TokenData {
@@ -85,6 +88,7 @@ export interface StoredAISettings {
   geminiApiKey: string;
   deepseekApiKey: string;
   sensenovaApiKey: string;
+  qiniuApiKey: string;
   deepseekThinkingEnabled: boolean;
 }
 
@@ -151,6 +155,7 @@ export function loadAISettingsFromStorage(storage: StorageLike): StoredAISetting
     geminiApiKey: geminiApiKey || '',
     deepseekApiKey: storage.getItem('deepseekApiKey') || '',
     sensenovaApiKey: storage.getItem('sensenovaApiKey') || '',
+    qiniuApiKey: storage.getItem('qiniuApiKey') || '',
     deepseekThinkingEnabled: false,
   };
 }
@@ -1619,3 +1624,4 @@ export async function sendChat(
     throw error;
   }
 }
+

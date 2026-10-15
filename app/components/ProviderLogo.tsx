@@ -6,7 +6,8 @@ import type { AIProvider } from '../services/api';
 export const PROVIDER_LABELS: Record<AIProvider, string> = {
   gemini: 'Gemini',
   deepseek: 'DeepSeek',
-  sensenova: "商汤日日新"
+  sensenova: "商汤日日新",
+  qiniu: "七牛云"
 };
 
 interface ProviderLogoProps {
@@ -47,6 +48,13 @@ export function ProviderLogo({ provider, className = 'h-4 w-4' }: ProviderLogoPr
     );
   }
 
+  if (provider === 'qiniu') {
+    return (
+      <svg className={`${className} shrink-0`} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="#0A5FFF" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-13.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm-7 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zM12 17.5c-2.5 0-4.5-1.5-5.5-3.5h11c-1 2-3 3.5-5.5 3.5z"/>
+      </svg>
+    );
+  }
   return (
     <svg className={`${className} shrink-0`} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path

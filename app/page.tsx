@@ -65,6 +65,7 @@ export default function Home() {
   const [geminiApiKey, setGeminiApiKey] = useState('');
   const [deepseekApiKey, setDeepseekApiKey] = useState('');
   const [sensenovaApiKey, setSensenovaApiKey] = useState('');
+  const [qiniuApiKey, setQiniuApiKey] = useState('');
   const [deepseekThinkingEnabled, setDeepseekThinkingEnabled] = useState(false);
   const [hasDeepseekReasoning, setHasDeepseekReasoning] = useState(false);
   const hasDeepseekReasoningRef = useRef(false);
@@ -89,6 +90,7 @@ export default function Home() {
   gemini: geminiApiKey,
   deepseek: deepseekApiKey,
   sensenova: sensenovaApiKey,
+  qiniu: qiniuApiKey,
   };
   const userApiKey = apiKeyByProvider[aiProvider];
 
@@ -175,6 +177,7 @@ export default function Home() {
     setGeminiApiKey(storedAISettings.geminiApiKey);
     setDeepseekApiKey(storedAISettings.deepseekApiKey);
     setSensenovaApiKey(storedAISettings.sensenovaApiKey);
+    setQiniuApiKey(storedAISettings.qiniuApiKey);
     setDeepseekThinkingEnabled(storedAISettings.deepseekThinkingEnabled);
     setTtsProvider(storedTtsProvider);
 
@@ -192,6 +195,7 @@ export default function Home() {
     deepseekApiKey: string;
     deepseekThinkingEnabled: boolean;
     sensenovaApiKey: string;
+    qiniuApiKey: string;
     useStream: boolean;
   }) => {
     browserStorage.setItem('aiProvider', settings.aiProvider);
@@ -199,6 +203,7 @@ export default function Home() {
     browserStorage.setItem('geminiApiKey', settings.geminiApiKey);
     browserStorage.setItem('deepseekApiKey', settings.deepseekApiKey);
     browserStorage.setItem('sensenovaApiKey', settings.sensenovaApiKey);  // ← 加
+    browserStorage.setItem('qiniuApiKey', settings.qiniuApiKey);
     browserStorage.setItem('deepseekThinkingEnabled', settings.deepseekThinkingEnabled.toString());
     browserStorage.setItem('useStream', settings.useStream.toString());
     browserStorage.removeItem('geminiApiUrl');
@@ -213,6 +218,7 @@ export default function Home() {
     setGeminiApiKey(settings.geminiApiKey);
     setDeepseekApiKey(settings.deepseekApiKey);
     setSensenovaApiKey(settings.sensenovaApiKey);
+    setQiniuApiKey(settings.qiniuApiKey);
     setDeepseekThinkingEnabled(settings.deepseekThinkingEnabled);
     setUseStream(settings.useStream);
     reasoningTextStore.reset();
@@ -712,6 +718,7 @@ export default function Home() {
           geminiApiKey={geminiApiKey}
           deepseekApiKey={deepseekApiKey}
           sensenovaApiKey={sensenovaApiKey}
+          qiniuApiKey={qiniuApiKey}
           useStream={useStream}
           onSaveSettings={handleSaveSettings}
           isModalOpen={isSettingsModalOpen}

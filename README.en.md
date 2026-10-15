@@ -56,11 +56,13 @@
 
 | Used for | Default | Optional |
 | --- | --- | --- |
-| Analysis, translation, entries | DeepSeek `deepseek-flash` | Gemini `gemini-flash-latest` / `gemini-flash-lite-latest` |
+| Analysis, translation, entries | SenseNova `sensenova-6.8-flash-lite` | DeepSeek `deepseek-flash` / Gemini `gemini-flash-latest`, `gemini-flash-lite-latest` / Qiniu Cloud `moonshotai/kimi-k3-free` |
 | Image text recognition | Same as the selected text model | — |
 | Read-aloud | Edge TTS | Gemini TTS (requires a Gemini key) |
 
 Keys configured on the server are shared by all visitors. Users can also enter their own keys in Settings; they're stored in that browser and sent through this app's server to the model provider with each request.
+
+Each request only uses the key of the provider selected for that request — there is no cross-provider fallback. Make sure the provider you intend to use has its key configured (the default is SenseNova, i.e. `SENSENOVA_API_KEY`).
 
 ## Quick start
 
@@ -73,10 +75,10 @@ npm ci
 cp .env.example .env.local   # Windows: Copy-Item .env.example .env.local
 ```
 
-Add at least one key to `.env.local`, then start the dev server:
+Add the key for the default provider (SenseNova) to `.env.local`, then start the dev server:
 
 ```env
-DEEPSEEK_API_KEY=your_deepseek_api_key
+SENSENOVA_API_KEY=your_sensenova_api_key
 ```
 
 ```bash
@@ -89,9 +91,11 @@ Open <http://localhost:3000>. To try it from a phone on the same network, run `n
 
 | Variable | Purpose |
 | --- | --- |
-| `DEEPSEEK_API_KEY` | Recommended. Default analysis, translation, and image recognition |
+| `SENSENOVA_API_KEY` | Key for the default provider (SenseNova). The app uses it by default, so configure at least this one |
+| `DEEPSEEK_API_KEY` | Optional. DeepSeek analysis, translation, and image recognition |
 | `GEMINI_API_KEY` | Optional. Gemini text models, image recognition, and Gemini TTS |
-| `DEEPSEEK_API_URL` / `GEMINI_API_URL` | Optional. OpenAI-compatible endpoints; leave empty for the official ones |
+| `QINIU_API_KEY` | Optional. Qiniu Cloud AI inference platform |
+| `DEEPSEEK_API_URL` / `GEMINI_API_URL` / `SENSENOVA_API_URL` / `QINIU_API_URL` | Optional. OpenAI-compatible endpoints; leave empty for the official ones |
 | `CODE` | Optional. Access password; leave empty for open access |
 | `NEXT_PUBLIC_UMAMI_SRC` / `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | Optional. Set both to enable Umami analytics |
 
@@ -150,8 +154,10 @@ docker run -d \
   --name japanese-analyzer \
   --restart unless-stopped \
   -p 3002:3002 \
-  -e DEEPSEEK_API_KEY="your_deepseek_api_key" \
+  -e SENSENOVA_API_KEY="your_sensenova_api_key" \
+  -e DEEPSEEK_API_KEY="" \
   -e GEMINI_API_KEY="" \
+  -e QINIU_API_KEY="" \
   -e CODE="" \
   howenhowen/japanese-analyzer:latest
 ```

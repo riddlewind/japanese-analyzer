@@ -21,9 +21,11 @@
    - A. 当前这台 Linux 服务器，用 Docker（推荐）
    - B. Vercel
    - C. 只在本机运行试用
-2. **DeepSeek API Key**（推荐，默认的解析、翻译和图片识别都用它）。没有的话，也可以只提供 Gemini Key。
+2. **商汤日日新 API Key（`SENSENOVA_API_KEY`）**（应用默认使用的供应商，不填页面会提示「未提供 API 密钥」）。用户也可以改用别的供应商，任一即可：
+   - `DEEPSEEK_API_KEY`：DeepSeek 的解析、翻译与图片识别
+   - `GEMINI_API_KEY`：Gemini 模型和 Gemini 朗读
+   - `QINIU_API_KEY`：七牛云 AI 推理平台
 3. **可选项**，没有就跳过：
-   - Gemini API Key：启用 Gemini 模型和 Gemini 朗读
    - 访问密码 `CODE`：设置后打开网站需要先输入密码
    - 域名：需要 HTTPS 访问时提供（仅 A）
 
@@ -55,8 +57,10 @@ curl -fsSL https://raw.githubusercontent.com/cokice/japanese-analyzer/master/doc
 创建 `.env.production`，填入用户提供的值，没有的留空：
 
 ```env
+SENSENOVA_API_KEY=
 DEEPSEEK_API_KEY=
 GEMINI_API_KEY=
+QINIU_API_KEY=
 CODE=
 ```
 
@@ -100,7 +104,7 @@ curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3002
 Vercel 需要用户本人登录授权，你负责指导：
 
 1. 让用户打开 <https://vercel.com/new/clone?repository-url=https://github.com/cokice/japanese-analyzer> 并导入仓库。
-2. 在 `Settings → Environment Variables` 添加 `DEEPSEEK_API_KEY`（以及可选的 `GEMINI_API_KEY`、`CODE`）。
+2. 在 `Settings → Environment Variables` 添加 `SENSENOVA_API_KEY`（默认供应商），以及用户选用的其他供应商 Key（`DEEPSEEK_API_KEY`、`GEMINI_API_KEY`、`QINIU_API_KEY`）和可选的 `CODE`。
 3. 重新部署，打开 Vercel 分配的域名验证。
 
 如果用户已经安装并登录了 `vercel` CLI，也可以在仓库目录执行 `vercel`，用 `vercel env add` 添加变量后 `vercel --prod`。
@@ -113,7 +117,7 @@ Vercel 需要用户本人登录授权，你负责指导：
 git clone https://github.com/cokice/japanese-analyzer.git
 cd japanese-analyzer
 npm ci
-cp .env.example .env.local   # 填入 DEEPSEEK_API_KEY 等
+cp .env.example .env.local   # 填入 SENSENOVA_API_KEY 等
 npm run build && npm start   # 只是试用也可以用 npm run dev
 ```
 
@@ -125,7 +129,7 @@ npm run build && npm start   # 只是试用也可以用 npm run dev
 
 - 访问地址（IP:端口，或域名）
 - 如果设置了 `CODE`，提醒首次访问需要输入密码
-- 如果只配置了 Gemini Key：网站默认使用 DeepSeek，提醒用户在右上角「设置」里把服务商切换为 Gemini
+- 如果用户配置的不是默认供应商：提醒用户在右上角「设置」里把服务商切换到已配置 Key 的那一个
 - 以后更新到最新版的命令（Docker）：
 
   ```bash
@@ -138,7 +142,7 @@ npm run build && npm start   # 只是试用也可以用 npm run dev
 
 | 现象 | 处理 |
 | --- | --- |
-| 页面能打开，但解析报「未提供 API 密钥」 | `.env.production` 里没有有效的 `DEEPSEEK_API_KEY` / `GEMINI_API_KEY`，改好后 `docker compose up -d` 重建容器 |
+| 页面能打开，但解析报「未提供 API 密钥」 | `.env.production` 里没有配置「当前所选供应商」的 Key（默认供应商是商汤日日新，对应 `SENSENOVA_API_KEY`）。补齐后 `docker compose up -d` 重建容器，或在「设置」里切换到已配置 Key 的供应商 |
 | 外网打不开，本机 `curl` 正常 | 云厂商安全组或系统防火墙没有放行对应端口 |
 | 首页「今日一句」只在内置的 7 句里轮换 | 服务器没有可用的 API Key，或出站网络访问不到模型服务商 |
 | 证书申请失败 | 域名尚未解析到本机，或 80 端口没有放行 |

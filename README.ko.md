@@ -56,11 +56,13 @@
 
 | 용도 | 기본값 | 선택 |
 | --- | --- | --- |
-| 분석, 번역, 설명 | DeepSeek `deepseek-flash` | Gemini `gemini-flash-latest` / `gemini-flash-lite-latest` |
+| 분석, 번역, 설명 | 센스노바(SenseNova) `sensenova-6.8-flash-lite` | DeepSeek `deepseek-flash` / Gemini `gemini-flash-latest`, `gemini-flash-lite-latest` / Qiniu Cloud `moonshotai/kimi-k3-free` |
 | 이미지 인식 | 선택한 텍스트 모델과 동일 | — |
 | 읽어 주기 | Edge TTS | Gemini TTS(Gemini 키 필요) |
 
 서버에 설정한 키는 모든 방문자가 함께 사용합니다. 사용자는 설정에서 자신의 키를 입력할 수도 있으며, 키는 해당 브라우저에 저장되고 요청할 때 이 앱의 서버를 거쳐 모델 제공 업체로 전달됩니다.
+
+요청은 그 요청에서 선택한 제공 업체의 키만 사용하며, 제공 업체 간 대체(fallback)는 하지 않습니다. 사용하려는 제공 업체의 키를 반드시 설정하세요(기본값은 SenseNova, 즉 `SENSENOVA_API_KEY`).
 
 ## 빠른 시작
 
@@ -73,10 +75,10 @@ npm ci
 cp .env.example .env.local   # Windows: Copy-Item .env.example .env.local
 ```
 
-`.env.local`에 키를 하나 이상 입력한 뒤 실행합니다:
+`.env.local`에 기본 제공 업체(SenseNova)의 키를 입력한 뒤 실행합니다:
 
 ```env
-DEEPSEEK_API_KEY=your_deepseek_api_key
+SENSENOVA_API_KEY=your_sensenova_api_key
 ```
 
 ```bash
@@ -89,9 +91,11 @@ npm run dev
 
 | 변수 | 설명 |
 | --- | --- |
-| `DEEPSEEK_API_KEY` | 권장. 기본 분석, 번역, 이미지 인식 |
+| `SENSENOVA_API_KEY` | 기본 제공 업체(SenseNova)의 키. 앱이 기본으로 사용하므로 최소한 이것을 설정하세요 |
+| `DEEPSEEK_API_KEY` | 선택. DeepSeek 분석, 번역, 이미지 인식 |
 | `GEMINI_API_KEY` | 선택. Gemini 텍스트 모델, 이미지 인식, Gemini TTS |
-| `DEEPSEEK_API_URL` / `GEMINI_API_URL` | 선택. OpenAI 호환 엔드포인트, 비워 두면 공식 주소 사용 |
+| `QINIU_API_KEY` | 선택. Qiniu Cloud AI 추론 플랫폼 |
+| `DEEPSEEK_API_URL` / `GEMINI_API_URL` / `SENSENOVA_API_URL` / `QINIU_API_URL` | 선택. OpenAI 호환 엔드포인트, 비워 두면 공식 주소 사용 |
 | `CODE` | 선택. 접속 비밀번호, 비워 두면 비밀번호 없이 사용 |
 | `NEXT_PUBLIC_UMAMI_SRC` / `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | 선택. 둘 다 입력하면 Umami 통계 사용 |
 
@@ -150,8 +154,10 @@ docker run -d \
   --name japanese-analyzer \
   --restart unless-stopped \
   -p 3002:3002 \
-  -e DEEPSEEK_API_KEY="your_deepseek_api_key" \
+  -e SENSENOVA_API_KEY="your_sensenova_api_key" \
+  -e DEEPSEEK_API_KEY="" \
   -e GEMINI_API_KEY="" \
+  -e QINIU_API_KEY="" \
   -e CODE="" \
   howenhowen/japanese-analyzer:latest
 ```
