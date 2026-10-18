@@ -7,7 +7,7 @@ import {
   type AIProvider,
 } from '../../lib/aiModels';
 
-export type StructuredOutputKind = 'analysisTokens' | 'wordDetail' | 'phraseDetail' | 'dailySentence';
+export type StructuredOutputKind = 'analysisTokens' | 'wordDetail' | 'phraseDetail' | 'dailySentence' | 'corpusExamples';
 export { DEFAULT_AI_PROVIDER, normalizeAIProvider };
 export type { AIProvider };
 
@@ -178,6 +178,29 @@ const dailySentenceSchema = {
   additionalProperties: false,
 } as const;
 
+const corpusExamplesSchema = {
+  type: 'object',
+  properties: {
+    examples: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          ja: { type: 'string' },
+          translation: { type: 'string' },
+          sourceIndex: { type: 'integer' },
+        },
+        required: ['ja', 'translation', 'sourceIndex'],
+        additionalProperties: false,
+      },
+    },
+    registers: { type: 'array', items: { type: 'string' } },
+    note: { type: 'string' },
+  },
+  required: ['examples', 'registers', 'note'],
+  additionalProperties: false,
+} as const;
+
 const structuredOutputSchemas = {
   analysisTokens: {
     name: 'japanese_sentence_analysis',
@@ -194,6 +217,10 @@ const structuredOutputSchemas = {
   dailySentence: {
     name: 'japanese_daily_sentence',
     schema: dailySentenceSchema,
+  },
+  corpusExamples: {
+    name: 'japanese_corpus_examples',
+    schema: corpusExamplesSchema,
   },
 } as const;
 

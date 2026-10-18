@@ -9,12 +9,15 @@ import InputSection from './components/InputSection';
 import AnalysisResult, { DisplayOptions } from './components/AnalysisResult';
 import TranslationSection from './components/TranslationSection';
 import SettingsModal from './components/SettingsModal';
+import ChangelogModal from './components/ChangelogModal';
 import Header from './components/Header';
 import LoginModal from './components/LoginModal';
 import AIChat from './components/AIChat';
 import ReasoningStream from './components/ReasoningStream';
 import WordDetailPanel from './components/WordDetailPanel';
 import { useWordDetail } from './hooks/useWordDetail';
+import { useCorpusLookup } from './hooks/useCorpusLookup';
+import { useChangelog } from './hooks/useChangelog';
 import { useAnalysisHistory } from './hooks/useAnalysisHistory';
 import { AnalyzeStreamParser } from './utils/analyzeStreamParser';
 import { selectWordDetailContext } from './utils/wordDetailContext';
@@ -60,6 +63,7 @@ export default function Home() {
 
   // API设置相关状态
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const changelog = useChangelog();
   const [aiProvider, setAiProvider] = useState<AIProvider>(DEFAULT_AI_PROVIDER);
   const [aiModel, setAiModel] = useState<AIModelName>(getModelName(DEFAULT_AI_PROVIDER));
   const [geminiApiKey, setGeminiApiKey] = useState('');
@@ -106,6 +110,16 @@ export default function Home() {
     fetchWordDetails,
     clearWordDetail,
   } = useWordDetail({ userApiKey, aiProvider, aiModel, useStream });
+
+  const corpusLookup = useCorpusLookup({
+    word: wordDetail?.originalWord || '',
+    sentence: currentSentence,
+    pos: wordDetail?.pos,
+    userApiKey,
+    aiProvider,
+    aiModel,
+    searchApiKey: deepseekApiKey,
+  });
 
   useEffect(() => {
     analysisAbortControllerRef.current?.abort('language-change');
@@ -550,6 +564,22 @@ export default function Home() {
   const hasWordDetail = (selectedIndex !== null || selectedRange !== null)
     && (isWordDetailLoading || isWordDetailStreaming || wordDetail !== null || !!wordDetailStreamError);
 
+  // 「解析这句」把检索到的真实例句送进主输入流程，搜索只是入口，解析才是归宿。
+  const handleAnalyzeCorpusExample = (text: string) => {
+    setSelectedIndex(null);
+    setSelectedRange(null);
+    void handleAnalyze(text);
+  };
+
+  const corpusPanelProps = {
+    corpusAvailable: corpusLookup.available,
+    corpusState: corpusLookup.state,
+    corpusResult: corpusLookup.result,
+    corpusError: corpusLookup.error,
+    onLookupCorpus: corpusLookup.lookup,
+    onAnalyzeExample: handleAnalyzeCorpusExample,
+  };
+
   const wordDetailPanel = (
     <WordDetailPanel
       wordDetail={wordDetail}
@@ -561,6 +591,7 @@ export default function Home() {
       onRefresh={handleRefreshWordDetail}
       onMerge={canMergePhrase ? handleMergePhrase : undefined}
       onSelectMore={selectedIndex !== null ? handleStartPick : undefined}
+      {...corpusPanelProps}
     />
   );
 
@@ -594,6 +625,8 @@ export default function Home() {
           thinking={isAnalyzing}
           aiProvider={aiProvider}
           onSettingsClick={() => setIsSettingsModalOpen(true)}
+          onChangelogClick={changelog.open}
+          hasUnreadChangelog={changelog.hasUnread}
         />
 
         {/* 阅读列居中；点词后详情栏从右侧展开，主列随之左移。 */}
@@ -709,6 +742,10 @@ export default function Home() {
 
         <footer className="px-4 pb-6 pt-1 text-center text-xs sm:px-9" style={{ color: 'var(--ink-3)' }}>
           {t("AI模型容易限流，过几秒多点几次就好了喵")}
+          {' · '}
+          <button type="button" className="footer-changelog-link" onClick={changelog.open}>
+            {t("更新日志")}
+          </button>
         </footer>
 
         {/* 设置模态框 */}
@@ -723,6 +760,12 @@ export default function Home() {
           onSaveSettings={handleSaveSettings}
           isModalOpen={isSettingsModalOpen}
           onModalClose={() => setIsSettingsModalOpen(!isSettingsModalOpen)}
+        />
+
+        <ChangelogModal
+          isOpen={changelog.isOpen}
+          onClose={changelog.close}
+          unseenIds={changelog.unseenIds}
         />
       </div>
 
@@ -751,9 +794,10 @@ export default function Home() {
               streamContent={wordDetailStreamContent}
               onClose={handleCloseWordDetail}
               onRefresh={handleRefreshWordDetail}
-      onMerge={canMergePhrase ? handleMergePhrase : undefined}
-      onSelectMore={selectedIndex !== null ? handleStartPick : undefined}
+              onMerge={canMergePhrase ? handleMergePhrase : undefined}
+              onSelectMore={selectedIndex !== null ? handleStartPick : undefined}
               hideClose
+              {...corpusPanelProps}
             />
           </div>
         </div>,
@@ -762,7 +806,7 @@ export default function Home() {
 
       {/* AI聊天助手 */}
       <AIChat
-        hidden={isSettingsModalOpen}
+        hidden={isSettingsModalOpen || changelog.isOpen}
         userApiKey={userApiKey}
         aiProvider={aiProvider}
         aiModel={aiModel}

@@ -32,6 +32,7 @@
 **读句子**
 - 输入或粘贴日语，逐词标出假名、罗马音和词性，下方给出整句译文
 - 点任意一个词，查看本句里的意思、用法、活用和例句
+- 再点「检索真实例句」，从日语词典与语料站点取回真实用例，附来源链接和语域标签；只有能在原文里原样找到的句子才会显示
 - 拖过几个词（或在释义里点「选中多个词」），把语法结构、惯用语当作一个整体来讲；被拆开的词可以一键合并
 
 **更顺手**
@@ -44,6 +45,7 @@
 - 简体中文、繁体中文、English、한국어，界面、翻译和释义一起切换
 - 浅色 / 深色，桌面与手机都能用
 - 最近的解析记录保存在浏览器本地
+- 右上角的喇叭按钮是「更新日志」，有新功能时带一个小圆点，点开就是最新改动
 
 <table>
   <tr>
@@ -92,7 +94,8 @@ npm run dev
 | 变量 | 说明 |
 | --- | --- |
 | `SENSENOVA_API_KEY` | 默认供应商（商汤日日新）的 Key。应用默认走这个，至少填它才能开箱可用 |
-| `DEEPSEEK_API_KEY` | 可选。DeepSeek 的解析、翻译与图片识别 |
+| `DEEPSEEK_API_KEY` | 可选。DeepSeek 的解析、翻译、图片识别，以及「真实语料」检索用的 Search API |
+| `DEEPSEEK_TOOLS_API_URL` | 可选。Search 接口地址，留空用 `https://api.deepseek.com` |
 | `GEMINI_API_KEY` | 可选。Gemini 文本模型、图片识别与 Gemini TTS |
 | `QINIU_API_KEY` | 可选。七牛云 AI 推理平台 |
 | `DEEPSEEK_API_URL` / `GEMINI_API_URL` / `SENSENOVA_API_URL` / `QINIU_API_URL` | 可选。OpenAI 兼容接口地址，留空用官方地址 |
@@ -100,6 +103,16 @@ npm run dev
 | `NEXT_PUBLIC_UMAMI_SRC` / `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | 可选。两个都填写后启用 Umami 统计 |
 
 Key 只在服务端使用，不会下发到浏览器。「每日一句」使用服务器 Key 生成，未配置时显示内置例句。
+
+### 真实语料检索
+
+点词之后的「检索真实例句」是可选的增强功能，会调用 DeepSeek 的 Search API（每次成功检索约 0.005 元），再由当前所选模型把命中结果归纳成例句、译词和语域标签。
+
+- 服务端配了 `DEEPSEEK_API_KEY`，所有访客都能用
+- 没配服务器 Key 时，用户在设置里填自己的 DeepSeek Key 也能用
+- 两边都没有，界面不显示这个入口，其他功能不受影响
+- 模型归纳出的每条例句都要在检索到的原文里原样出现才会保留，找不到就显示「没有可核实的真实例句」，不会凭空造句
+- 同一个词的结果在服务端缓存 6 小时，并限制每分钟的检索次数
 
 <details>
 <summary>Umami 会记录什么</summary>
@@ -178,6 +191,22 @@ npm run build        # 生产构建
 ```
 
 反馈问题或建议请提 [Issue](https://github.com/cokice/japanese-analyzer/issues)，欢迎 Pull Request。报告解析问题时，附上服务商、模型、界面语言和能复现的原文即可，不要贴 API Key。
+
+### 更新日志怎么改
+
+内容在 `app/lib/changelog.ts` 的 `CHANGELOG_ENTRIES` 里，按时间倒序排：
+
+```ts
+{
+  id: '2026-10-18-corpus',   // 稳定标识，用来判断用户看过没；只改文案时不要动
+  date: '2026-10-18',
+  kind: 'new',               // new | improved | fixed
+  title: { 'zh-CN': '…', 'zh-TW': '…', en: '…', ko: '…' },
+  items: { 'zh-CN': ['…'], 'zh-TW': ['…'], en: ['…'], ko: ['…'] },
+}
+```
+
+新增一条放在数组最前面，四种语言都填满（`npm test` 会检查 id 唯一、日期格式、条目数一致、没有漏翻）。用户看过之后把最新一条的 id 记在 localStorage 的 `changelogSeenId` 里，出现新 id 才会在喇叭按钮上亮小圆点。
 
 ## 致谢
 

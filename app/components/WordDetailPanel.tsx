@@ -3,6 +3,8 @@
 import { useLanguage } from '../contexts/LanguageContext';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { WordDetail } from '../services/api';
+import type { CorpusLookupResult } from '../services/api';
+import type { CorpusLookupState } from '../hooks/useCorpusLookup';
 import { getPosGroup, normalizePosBase, POS_GROUP_COLORS, POS_GROUP_LABELS, posChineseMap, speakJapanese, getJapaneseTtsAudioUrl } from '../utils/helpers';
 import { trackTtsUsage } from '../utils/analytics';
 import { Icon, I } from './Icons';
@@ -21,6 +23,14 @@ interface WordDetailPanelProps {
   onSelectMore?: () => void;
   /* 不在面板中显示关闭按钮（移动端模态自带关闭时） */
   hideClose?: boolean;
+  /** 配了搜索 Key 时才显示「真实语料」区块 */
+  corpusAvailable?: boolean;
+  corpusState?: CorpusLookupState;
+  corpusResult?: CorpusLookupResult | null;
+  corpusError?: string;
+  onLookupCorpus?: () => void;
+  /** 把检索到的真实例句送回解析器 */
+  onAnalyzeExample?: (text: string) => void;
 }
 
 // 短语类别（AI 返回的日文标签）→ 界面文案
@@ -109,6 +119,12 @@ export default function WordDetailPanel({
   onMerge,
   onSelectMore,
   hideClose = false,
+  corpusAvailable = false,
+  corpusState = 'idle',
+  corpusResult = null,
+  corpusError = '',
+  onLookupCorpus,
+  onAnalyzeExample,
 }: WordDetailPanelProps) {
   const { t, errorText } = useLanguage();
   const [isExplanationExpanded, setIsExplanationExpanded] = useState(false);
@@ -399,6 +415,105 @@ export default function WordDetailPanel({
               <p lang="ja" className="jp m-0 text-sm leading-7" style={{ color: 'var(--ink)' }}>{wordDetail.example}</p>
               <p className="m-0 mt-1 text-xs leading-6" style={{ color: 'var(--ink-2)' }}>{wordDetail.exampleTranslation}</p>
             </div>
+          </DetailSection>
+        )}
+        {corpusAvailable && onLookupCorpus && !isStreamLoading && (
+          <DetailSection label={t("真实语料")}>
+            {corpusState === 'idle' && (
+              <div>
+                <button type="button" className="nd-soft-btn" onClick={onLookupCorpus}>
+                  {t("检索真实例句")}
+                </button>
+                <p className="m-0 mt-2 text-[11px] leading-5" style={{ color: 'var(--ink-3)' }}>
+                  {t("从日语词典与语料站点检索，例句附来源链接")}
+                </p>
+              </div>
+            )}
+
+            {corpusState === 'loading' && (
+              <div className="flex items-center gap-2 py-1">
+                <div className="loading-spinner" />
+                <span className="text-xs" style={{ color: 'var(--ink-3)' }}>{t("正在检索真实语料…")}</span>
+              </div>
+            )}
+
+            {corpusState === 'error' && (
+              <div>
+                <p className="m-0 text-xs leading-6" style={{ color: 'var(--pos-p)' }}>
+                  {errorText(corpusError || t("检索真实语料失败"))}
+                </p>
+                <button type="button" className="nd-soft-btn mt-2" onClick={onLookupCorpus}>
+                  {t("重试")}
+                </button>
+              </div>
+            )}
+
+            {corpusState === 'done' && corpusResult && corpusResult.examples.length === 0 && (
+              <p className="m-0 text-xs leading-6" style={{ color: 'var(--ink-3)' }}>
+                {t("没有检索到可核实的真实例句")}
+              </p>
+            )}
+
+            {corpusState === 'done' && corpusResult && corpusResult.examples.length > 0 && (
+              <div className="flex flex-col gap-3">
+                {corpusResult.registers.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {corpusResult.registers.map((register) => (
+                      <span
+                        key={register}
+                        className="rounded-full px-2 py-0.5 text-[11px]"
+                        style={{ background: 'var(--bg)', color: 'var(--ink-2)' }}
+                      >
+                        {register}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {corpusResult.examples.map((example, index) => {
+                  const source = corpusResult.sources[example.sourceIndex];
+                  return (
+                    <div
+                      key={`${example.ja}-${index}`}
+                      className="rounded-[10px] px-3 py-2.5"
+                      style={{ background: 'var(--bg)' }}
+                    >
+                      <p lang="ja" className="jp m-0 text-sm leading-7" style={{ color: 'var(--ink)' }}>
+                        {example.ja}
+                      </p>
+                      <p className="m-0 mt-1 text-xs leading-6" style={{ color: 'var(--ink-2)' }}>
+                        {example.translation}
+                      </p>
+                      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                        {source && (
+                          <a
+                            href={source.url}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            className="text-[11px] underline decoration-dotted underline-offset-2"
+                            style={{ color: 'var(--ink-3)' }}
+                          >
+                            {source.site || source.title || t("来源")}
+                          </a>
+                        )}
+                        {onAnalyzeExample && (
+                          <button
+                            type="button"
+                            className="cursor-pointer border-none bg-transparent p-0 text-[11px] font-medium"
+                            style={{ color: 'var(--primary)' }}
+                            onClick={() => onAnalyzeExample(example.ja)}
+                          >
+                            {t("解析这句")}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+                {corpusResult.note && (
+                  <p className="m-0 text-xs leading-6" style={{ color: 'var(--ink-3)' }}>{corpusResult.note}</p>
+                )}
+              </div>
+            )}
           </DetailSection>
         )}
         {onMerge && !isStreamLoading && (

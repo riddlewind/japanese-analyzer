@@ -1223,6 +1223,175 @@ input, textarea {
   text-decoration: none;
 }
 
+/* 更新日志 */
+.header-notice-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--primary);
+  box-shadow: 0 0 0 2px var(--bg-2);
+  pointer-events: none;
+}
+
+.changelog-modal-content {
+  max-width: 560px;
+  padding: 22px 24px 20px;
+}
+
+.changelog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.changelog-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.changelog-subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-3);
+}
+
+.changelog-empty {
+  margin: 22px 0 4px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.changelog-list {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0 4px 0 0;
+  max-height: min(62vh, 480px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.changelog-entry {
+  padding-left: 14px;
+  border-left: 2px solid var(--line);
+}
+
+.changelog-entry[data-fresh='true'] {
+  border-left-color: var(--primary);
+}
+
+.changelog-entry-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.changelog-badge {
+  flex: none;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.7;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.changelog-badge:not([data-kind='new']) {
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  color: var(--ink-3);
+}
+
+.changelog-entry-title {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.changelog-new-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.changelog-date {
+  margin-left: auto;
+  flex: none;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+
+.changelog-items {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.changelog-items > li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+
+.changelog-items > li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 9px;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line-2);
+}
+
+@media (max-width: 640px) {
+  .changelog-modal-content {
+    padding: 20px 16px 18px;
+  }
+
+  .changelog-list {
+    max-height: 64vh;
+  }
+}
+
+.footer-changelog-link {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--line-2);
+  text-underline-offset: 3px;
+}
+
+.footer-changelog-link:hover {
+  color: var(--primary);
+}
+
 /* 词语详情模态窗口（移动端） */
 .word-detail-modal {
   position: fixed;

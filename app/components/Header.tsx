@@ -12,9 +12,13 @@ interface HeaderProps {
   thinking: boolean;
   aiProvider: AIProvider;
   onSettingsClick?: () => void;
+  /** 打开更新日志 */
+  onChangelogClick?: () => void;
+  /** 有没看过的新功能时在图标上点一个小圆点 */
+  hasUnreadChangelog?: boolean;
 }
 
-export default function Header({ aiProvider, onSettingsClick }: HeaderProps) {
+export default function Header({ aiProvider, onSettingsClick, onChangelogClick, hasUnreadChangelog = false }: HeaderProps) {
   const { t } = useLanguage();
   const providerLabel = PROVIDER_LABELS[aiProvider];
 
@@ -63,6 +67,18 @@ export default function Header({ aiProvider, onSettingsClick }: HeaderProps) {
           {Icon.github}
         </a>
         <ThemeToggle />
+        {onChangelogClick && (
+          <button
+            onClick={onChangelogClick}
+            title={hasUnreadChangelog ? `${t("更新日志")} · ${t("有新功能")}` : t("更新日志")}
+            aria-label={hasUnreadChangelog ? `${t("更新日志")} · ${t("有新功能")}` : t("更新日志")}
+            className="relative grid h-10 w-10 cursor-pointer place-items-center rounded-[10px] border-none bg-transparent transition-colors hover:text-[var(--primary)]"
+            style={{ color: 'var(--ink-2)' }}
+          >
+            {Icon.megaphone}
+            {hasUnreadChangelog && <span className="header-notice-dot" aria-hidden="true" />}
+          </button>
+        )}
         <LanguageToggle />
         <button
           onClick={onSettingsClick}

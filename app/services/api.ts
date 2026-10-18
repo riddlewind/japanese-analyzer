@@ -14,6 +14,7 @@ import { getLocalRomaji } from '../utils/romaji';
 import { ApiRequestError, InvalidResponseError } from '../utils/requestErrors';
 import { protectAnalysisUrls } from '../utils/analysisUrls';
 import { buildAnalyzePrompt } from '../lib/analyzePrompt';
+import type { CorpusExample, CorpusLookupResult, CorpusSource } from '../lib/corpusTypes';
 
 export {
   DEFAULT_AI_PROVIDER,
@@ -36,6 +37,7 @@ export type {
   SenseNovaModelName,
   QiniuModelName,
 } from '../lib/aiModels';
+export type { CorpusExample, CorpusLookupResult, CorpusSource } from '../lib/corpusTypes';
 
 export interface TokenData {
   word: string;
@@ -1313,6 +1315,87 @@ export async function streamWordDetails(
     console.error('Stream Word Detail error:', error);
     onError(error instanceof Error ? error : new Error('流式查询词汇详情时出错'));
   }
+}
+
+// 语料检索：搜索走服务端 DeepSeek Search，归纳走当前所选模型
+export interface CorpusLookupRequestOptions {
+  sentence?: string;
+  pos?: string;
+  /** 用户自己的 DeepSeek Key，用于搜索接口；留空则用服务端配置的 */
+  searchApiKey?: string;
+  signal?: AbortSignal;
+}
+
+function normalizeCorpusResult(value: unknown): CorpusLookupResult {
+  const record = isRecord(value) ? value : {};
+  const sources: CorpusSource[] = Array.isArray(record.sources)
+    ? record.sources.filter(isRecord).map(source => ({
+        title: typeof source.title === 'string' ? source.title : '',
+        url: typeof source.url === 'string' ? source.url : '',
+        site: typeof source.site === 'string' ? source.site : '',
+      })).filter(source => source.url)
+    : [];
+  const examples: CorpusExample[] = Array.isArray(record.examples)
+    ? record.examples.filter(isRecord).flatMap(example => {
+        if (typeof example.ja !== 'string' || typeof example.translation !== 'string') return [];
+        if (typeof example.sourceIndex !== 'number') return [];
+        return [{ ja: example.ja, translation: example.translation, sourceIndex: example.sourceIndex }];
+      })
+    : [];
+  const registers = Array.isArray(record.registers)
+    ? record.registers.filter((item): item is string => typeof item === 'string')
+    : [];
+  return {
+    examples,
+    registers,
+    note: typeof record.note === 'string' ? record.note : '',
+    sources,
+  };
+}
+
+/** 服务端是否配了可用于搜索的 Key；用户自己的 Key 由调用方另行判断。 */
+export async function getCorpusAvailability(signal?: AbortSignal): Promise<boolean> {
+  try {
+    const response = await fetch(getApiEndpoint('/corpus'), { signal });
+    if (!response.ok) return false;
+    const data: unknown = await response.json();
+    return isRecord(data) && data.available === true;
+  } catch {
+    return false;
+  }
+}
+
+export async function lookupCorpus(
+  word: string,
+  userApiKey: string | undefined,
+  provider: AIProvider = DEFAULT_AI_PROVIDER,
+  model?: string | null,
+  options: CorpusLookupRequestOptions = {}
+): Promise<CorpusLookupResult> {
+  const headers: Record<string, string> = { ...(getHeaders(userApiKey) as Record<string, string>) };
+  if (options.searchApiKey) headers['X-Search-Api-Key'] = options.searchApiKey;
+
+  const response = await fetch(getApiEndpoint('/corpus'), {
+    method: 'POST',
+    headers,
+    signal: options.signal,
+    body: JSON.stringify({
+      word,
+      sentence: options.sentence || '',
+      pos: options.pos || '',
+      ...getRequestProviderPayload(provider, model),
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    const message = isRecord(errorData) && isRecord(errorData.error) && typeof errorData.error.message === 'string'
+      ? errorData.error.message
+      : `检索真实语料失败：HTTP ${response.status}`;
+    throw new ApiRequestError(message, response.status);
+  }
+
+  return normalizeCorpusResult(await response.json());
 }
 
 // 翻译文本
