@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 import type { TokenData } from '../services/api';
 
 // 将禁则标点与相邻词放在同一换行单元中，不改变原始分词及点击索引。

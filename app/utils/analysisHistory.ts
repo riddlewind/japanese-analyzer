@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 export const ANALYSIS_HISTORY_KEY = 'japaneseAnalyzer:analysisHistory:v1';
 export const ANALYSIS_HISTORY_LIMIT = 50;
 

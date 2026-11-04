@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 // 句子解析提示词：前端解析请求与服务端「今日一句」共用，保证两处分词口径一致。
 export function buildAnalyzePrompt(sentence: string, extraInstruction = ''): string {
   return `请对以下日语句子进行词法分析，采用【日本学校文法（学校文法／教育文法）】体系，只返回严格有效的 JSON 对象，不要包含任何 markdown 或其他非 JSON 字符。

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 // 全局类型声明
 
 // 添加ruby相关元素到JSX.IntrinsicElements

@@ -1,5 +1,9 @@
 'use client';
 
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
+
 import { useEffect } from 'react';
 
 // 字体的 @font-face 表放到首屏之后再拉：Noto Sans JP 按 unicode-range 切片后每个字重的表约 100 KB，

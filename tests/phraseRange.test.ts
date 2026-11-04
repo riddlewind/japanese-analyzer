@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 import assert from 'node:assert/strict';
 import { parseWordDetailResponseContent } from '../app/services/api';
 import { getPhraseReading, getPhraseText, mergePhraseTokens, normalizePhraseRange, PHRASE_MAX_WORDS } from '../app/utils/phraseRange';

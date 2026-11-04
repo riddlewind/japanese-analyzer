@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 /** 语料检索的共享类型：服务端产出、前端渲染都用这一份。 */
 
 export interface CorpusExample {

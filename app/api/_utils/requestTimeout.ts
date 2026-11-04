@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 export const UPSTREAM_TIMEOUT_MS = 60_000;
 export const UPSTREAM_STREAM_IDLE_TIMEOUT_MS = 90_000;
 // 上游已返回错误状态码后，读取错误正文的最长等待时间。

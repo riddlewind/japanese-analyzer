@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 import assert from 'assert';
 import { groupPendingChars, groupReadingTokens } from '../app/utils/readingLayout';
 

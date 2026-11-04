@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 // 平文式罗马音；保留假名长音的元音拼写（ou / oo / uu），不用长音符号。
 const kana: Record<string, string> = {};
 const rows = [

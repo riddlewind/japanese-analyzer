@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 import { validateCompletion } from '../../services/api';
 import { InvalidResponseError } from '../../utils/requestErrors';
 import { readJsonBody, requestBodyErrorResponse, IMAGE_BODY_LIMIT } from '../_utils/requestBody';

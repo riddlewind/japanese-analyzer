@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 /** Browser preferences are optional; blocked or full storage must not break UI. */
 export const browserStorage = {
   getItem(key: string): string | null {

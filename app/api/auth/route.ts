@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 import { readJsonBody, AUTH_BODY_LIMIT, requestBodyErrorResponse } from '../_utils/requestBody';
 import { reserveLoginAttempt } from '../_utils/loginRateLimit';
 import { NextRequest, NextResponse } from 'next/server';

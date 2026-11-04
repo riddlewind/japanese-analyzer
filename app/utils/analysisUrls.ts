@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 // URLs are opaque data, not Japanese vocabulary. Keep their exact bytes locally
 // so the model never has to tokenize or reproduce long percent-encoded queries.
 export function protectAnalysisUrls(source: string) {

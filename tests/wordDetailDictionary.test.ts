@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 import assert from 'assert';
 import { parseWordDetailResponseContent } from '../app/services/api';
 import { getStructuredResponseFormat } from '../app/api/_utils/providerConfig';

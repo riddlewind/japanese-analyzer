@@ -1,5 +1,9 @@
 'use client';
 
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
+
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import AnimateHeight, { type Height } from 'react-animate-height';
 

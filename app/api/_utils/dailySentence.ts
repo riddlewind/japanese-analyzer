@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 import { LOCALES, type Locale } from '../../i18n';
 import { buildAnalyzePrompt } from '../../lib/analyzePrompt';
 import { DEFAULT_AI_PROVIDER, type AIProvider } from '../../lib/aiModels';

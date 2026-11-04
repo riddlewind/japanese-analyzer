@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 // 工具函数
 import { synthesizeSpeech, type TTSProvider } from '../services/api';
 

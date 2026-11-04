@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 // CODE is one shared account. Do not trust client-supplied forwarding headers as
 // limiter keys. Each server process permits at most ten attempts per minute.
 export function createLoginRateLimiter(limit = 10, windowMs = 60_000) {

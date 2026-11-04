@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 import { messages } from './messages';
 
 export const LOCALES = ['zh-CN', 'zh-TW', 'en', 'ko'] as const;

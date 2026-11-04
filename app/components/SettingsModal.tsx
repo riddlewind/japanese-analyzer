@@ -1,5 +1,9 @@
 'use client';
 
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
+
 import { useLanguage } from '../contexts/LanguageContext';
 import { useEffect, useState } from 'react';
 import { DEEPSEEK_MODEL_OPTIONS, GEMINI_MODEL_OPTIONS, QINIU_MODEL_OPTIONS, SENSENOVA_MODEL_OPTIONS, getModelName, type AIModelName, type AIProvider } from '../services/api';

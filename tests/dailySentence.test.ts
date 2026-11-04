@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 import assert from 'node:assert/strict';
 import { buildDailySentencePrompt, getProviderFallbackOrder, validateDailySentence } from '../app/api/_utils/dailySentence';
 import { DEFAULT_AI_PROVIDER } from '../app/lib/aiModels';

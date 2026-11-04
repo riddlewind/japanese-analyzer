@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 export type AIProvider = 'gemini' | 'deepseek' | 'sensenova' | 'qiniu';
 export type GeminiModelName = 'gemini-flash-latest' | 'gemini-flash-lite-latest';
 export type DeepSeekModelName = 'deepseek-flash';

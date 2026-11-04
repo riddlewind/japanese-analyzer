@@ -1,5 +1,9 @@
 'use client';
 
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
+
 import React, { useMemo, type JSX } from 'react';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';

@@ -1,5 +1,9 @@
 'use client';
 
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
+
 import { useLanguage } from '../contexts/LanguageContext';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { INITIAL_REASONING_SUMMARY } from '../utils/reasoningSummary';
