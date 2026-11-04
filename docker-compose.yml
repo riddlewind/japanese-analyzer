@@ -4,6 +4,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      # AGPL-3.0 §13：把构建版本写进镜像；运行时也可用 .env.production 里的 SOURCE_URL 覆盖。
+      args:
+        SOURCE_URL: ${SOURCE_URL:-}
+        SOURCE_VERSION: ${SOURCE_VERSION:-}
     env_file:
       - .env.production
     environment:

@@ -218,6 +218,11 @@ npm run build        # 生产构建
 
 AGPL 允许商业使用；分发本项目，或修改后通过网络提供服务时，需要按许可证提供对应源码。
 
+- 应用内的 `/legal` 页面是 AGPL 第 13 条的源码入口，顶栏图标与页脚均可到达；部署修改版时用 `SOURCE_URL` 指向实际部署版本的源码。
+- 以镜像或其他目标代码形式分发时，随附 [SOURCE](./SOURCE)（第 6 条书面要约）；镜像内已包含全部声明文件。
+- 第三方组件与字体（含 OFL 正文）见 [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)，可用 `npm run notices` 重新生成。
+- 贡献约定见 [CONTRIBUTING.md](./CONTRIBUTING.md)；`npm run check:license` 检查上述义务是否仍然成立，CI 会执行。
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=cokice/japanese-analyzer&type=Date)](https://www.star-history.com/#cokice/japanese-analyzer&Date)

@@ -51,5 +51,7 @@ next-env.d.ts
 # IDE
 /.idea/
 docs/CODEBASE.md
-.workbuddy/memory/2026-10-18.md
-.workbuddy/memory/2026-10-15.md
+docs/ima-project-knowledge.md
+
+# 本地工具数据，不属于源码
+/.workbuddy/

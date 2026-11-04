@@ -190,6 +190,8 @@ npm run build        # 正式環境建置
 
 AGPL 允許商業使用；散布適用作品，或修改後透過網路提供服務時，請依授權條款提供對應原始碼。
 
+應用程式內的 `/legal` 頁面是第 13 條的原始碼提供入口；部署修改版時請以 `SOURCE_URL` 指向實際部署的儲存庫。以目的碼形式散布時請隨附 [SOURCE](./SOURCE)，第三方聲明（含隨附字型的授權）見 [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)。`npm run check:license` 可檢查上述條件是否仍然成立。
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=cokice/japanese-analyzer&type=Date)](https://www.star-history.com/#cokice/japanese-analyzer&Date)

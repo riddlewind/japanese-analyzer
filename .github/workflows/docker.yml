@@ -41,6 +41,9 @@ jobs:
       - name: Run lint
         run: npm run lint
 
+      - name: Check license compliance
+        run: npm run check:license
+
       - name: Build Next.js app
         run: npm run build
 
@@ -152,6 +155,9 @@ jobs:
           push: false
           tags: ${{ env.IMAGE_NAME }}:ci-${{ matrix.arch }}
           labels: ${{ needs.docker-meta.outputs.labels }}
+          build-args: |
+            SOURCE_VERSION=${{ github.sha }}
+            SOURCE_URL=${{ vars.SOURCE_URL || format('{0}/{1}', github.server_url, github.repository) }}
           cache-from: type=gha,scope=docker-${{ matrix.arch }}
           cache-to: type=gha,mode=max,scope=docker-${{ matrix.arch }}
 
@@ -164,6 +170,9 @@ jobs:
           file: ./Dockerfile
           platforms: ${{ matrix.platform }}
           labels: ${{ needs.docker-meta.outputs.labels }}
+          build-args: |
+            SOURCE_VERSION=${{ github.sha }}
+            SOURCE_URL=${{ vars.SOURCE_URL || format('{0}/{1}', github.server_url, github.repository) }}
           outputs: type=image,name=${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha,scope=docker-${{ matrix.arch }}
           cache-to: type=gha,mode=max,scope=docker-${{ matrix.arch }}

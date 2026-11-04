@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
 // Simplified Chinese source text is the stable message key.
 export const messages = {
   "历史记录": {"zh-TW": "歷史紀錄", "en": "History", "ko": "기록"},
@@ -43,6 +46,7 @@ export const messages = {
   "返回首页": {"zh-TW": "返回首頁", "en": "Back to home", "ko": "홈으로"},
   "当前模型服务商：{0}": {"zh-TW": "目前的模型服務商：{0}", "en": "Current AI provider: {0}", "ko": "현재 AI 제공업체: {0}"},
   "GitHub 仓库": {"zh-TW": "GitHub 儲存庫", "en": "GitHub repository", "ko": "GitHub 저장소"},
+  "源代码与许可证 (AGPL-3.0)": {"zh-TW": "原始碼與授權條款 (AGPL-3.0)", "en": "Source code and license (AGPL-3.0)", "ko": "소스 코드 및 라이선스 (AGPL-3.0)"},
   "设置": {"zh-TW": "設定", "en": "Settings", "ko": "설정"},
   "更新日志": {"zh-TW": "更新日誌", "en": "What's new", "ko": "업데이트 내역"},
   "有新功能": {"zh-TW": "有新功能", "en": "New features", "ko": "새로운 기능"},

@@ -190,6 +190,8 @@ npm run build        # 프로덕션 빌드
 
 AGPL은 상업적 이용을 허용합니다. 적용 대상 저작물을 배포하거나 수정한 버전을 네트워크로 제공하는 경우, 라이선스 조건에 따라 해당 소스 코드를 제공해야 합니다.
 
+앱의 `/legal` 페이지가 제13조의 소스 제공 창구입니다. 수정본을 배포할 때는 `SOURCE_URL`을 실제로 배포하는 저장소로 지정하세요. 오브젝트 코드 형태로 배포할 때는 [SOURCE](./SOURCE)를 함께 제공하며, 제3자 고지(번들 폰트 라이선스 포함)는 [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)에 정리되어 있습니다. `npm run check:license`로 이 조건들이 유지되는지 확인할 수 있습니다.
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=cokice/japanese-analyzer&type=Date)](https://www.star-history.com/#cokice/japanese-analyzer&Date)

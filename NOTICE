@@ -2,7 +2,8 @@ japanese-analyzer
 Copyright (c) 2025 Howen
 Copyright (c) 2026 Howen and contributors
 
-Project source: https://github.com/cokice/japanese-analyzer
+Project source: https://github.com/riddlewind/japanese-analyzer
+Upstream origin: https://github.com/cokice/japanese-analyzer
 Contributor attribution is retained in the source files and Git history.
 
 Starting with the license-transition commit after the mit-final tag, the
@@ -32,3 +33,32 @@ Third-party components
 ----------------------
 Dependencies, fonts, and other third-party materials retain their respective
 licenses and notices. The project-wide license does not replace those terms.
+The consolidated list, including the full SIL Open Font License text for the
+bundled webfonts, is in THIRD-PARTY-NOTICES.md.
+
+Corresponding Source
+--------------------
+Every running deployment publishes its source offer at the /legal page, as
+required by section 13. Distributions in object-code form, including Docker
+images, ship with SOURCE (the written offer under section 6), LICENSE, NOTICE,
+LICENSING.md, LICENSES/ and THIRD-PARTY-NOTICES.md.
+
+Modifications in this repository
+--------------------------------
+This repository is a modified version of the upstream project named above.
+Per section 5(a) of the license, the modifications below were made on
+2026-11-04 and are stated here:
+
+- Added a /legal page publishing the Corresponding Source, build identifier,
+  modification statement, copyright notice, and the full license and
+  third-party notice texts; the header and footer link to it.
+- Added SOURCE (the section 6 written offer) and THIRD-PARTY-NOTICES.md, and
+  embedded the third-party notices, including both webfont OFL-1.1 texts, on
+  the /legal page so they ship with the running service.
+- Added SPDX license identifiers and copyright lines to source files.
+- Packaging changes: the Dockerfile ships the notice files, declares OCI
+  license metadata, and carries SOURCE_URL / SOURCE_VERSION through build and
+  runtime; CI runs scripts/check-license.mjs before building.
+
+The analysis features are unchanged by these edits. Any further modification is
+recorded in the Git history of this repository.

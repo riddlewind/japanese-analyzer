@@ -1,0 +1,95 @@
+# japanese-analyzer — Corresponding Source / 对应源码
+
+本文件是 AGPL-3.0 第 6 条所称的**书面要约（written offer）**，用于随目标代码形式
+（Docker 镜像、静态产物或其他可执行/可运行形态）一并提供对应源码。
+
+This file is the written offer of Corresponding Source referred to in section 6 of
+the GNU Affero General Public License, version 3, for distributions of this program
+in object-code form (Docker images, static bundles, or any other runnable form).
+
+## 1. 本程序 / The program
+
+- 名称 / Name: `japanese-analyzer`
+- 许可 / License: AGPL-3.0-only（`SPDX-License-Identifier: AGPL-3.0-only`）
+- 本构建的源码仓库 / Repository of this build: https://github.com/riddlewind/japanese-analyzer
+- 上游原始项目 / Original upstream project: https://github.com/cokice/japanese-analyzer（仅版权与来源说明，不作为本构建的源码入口）
+
+## 2. 对应源码的位置 / Where the Corresponding Source is
+
+优先级从高到低 / In order of precedence:
+
+1. **该构建自身的源码仓库**（部署方必须确认）/ The repository of the very build
+   that was conveyed. The deploying party must confirm it:
+   - 仓库 / Repository: `https://github.com/riddlewind/japanese-analyzer`
+   - 提交 / Commit: 该部署 `/legal` 页显示的构建版本，或本仓库对应的发布标签
+     （运行实例的 `/legal` 页给出的提交号即该构建的确切源码位置）。
+     The commit shown on that deployment's `/legal` page, or the matching release
+     tag of this repository.
+2. 若部署方自行修改并重新部署，则以**其修改版仓库**为准；本文件与上游地址均不能替代该源码。
+   If the deploying party modified the program, their own repository governs. Neither this file
+   nor the upstream URL substitutes for that source.
+
+如果你拿到的是修改版，上游链接**不能**替代对应源码。若本文件未填写第 1 项，
+请向分发者索取该版本的对应源码。
+
+If you received a modified version, the upstream link does **not** substitute for its
+Corresponding Source. If item 1 is empty, request the Corresponding Source for that
+version from whoever distributed it to you.
+
+## 3. 镜像内已包含的声明文件 / Notices shipped inside the image
+
+Docker 运行镜像的 `/app` 目录包含 / The runtime image contains, under `/app`:
+
+- `LICENSE` — AGPL-3.0 完整正文 / full license text
+- `NOTICE` — 版权与来源声明 / copyright and provenance notice
+- `LICENSING.md` — 许可范围与版本边界 / licensing scope and version boundary
+- `LICENSES/MIT-legacy.txt` — 历史 MIT 授权原文 / historical MIT grant
+- `THIRD-PARTY-NOTICES.md` — 第三方组件与字体声明 / third-party notices
+- `SOURCE` — 本文件 / this file
+
+这些声明文件本身不构成对应源码。
+
+These notices alone do not constitute the Corresponding Source.
+
+## 4. 如何构建对应版本 / Rebuilding the Corresponding Source
+
+对应源码指用于生成该目标代码的完整源码，以及构建、安装、运行所需的脚本。本项目的
+构建入口是仓库根的 `Dockerfile` 与 `package-lock.json`：
+
+```sh
+git clone <仓库地址> && cd japanese-analyzer
+git checkout <提交或标签>
+
+# 与发布镜像等价的构建
+docker build -t japanese-analyzer:local .
+
+# 或本地运行
+npm ci
+npm run build
+npm start
+```
+
+运行所需配置见 `.env.example` / `.env.production.example`。API Key、访问密码等部署凭据
+不属于对应源码，也未包含在任何源码包中。
+
+Configuration is documented in `.env.example` and `.env.production.example`. API keys and
+access passwords are not part of the Corresponding Source and are never bundled with it.
+
+## 5. 要约有效期 / Validity
+
+依 AGPL-3.0 第 6(b) 条，本要约自目标代码交付之日起**至少三年内**有效，且在该期间内
+对持有该目标代码的任何人有效。
+
+Under section 6(b) of AGPL-3.0 this offer is valid for at least three years from the date
+the object code was conveyed, and is valid for anyone who possesses that object code.
+
+## 6. 网络交互 / Remote network interaction
+
+若本程序被修改后通过网络提供服务，运营者必须依第 13 条向所有交互用户显著提供该修改
+版本对应源码的获取方式。应用内的 `/legal` 页面即为该入口，部署时必须把
+`NEXT_PUBLIC_SOURCE_URL` 指向实际部署版本的源码仓库。
+
+If a modified version is offered to users interacting with it remotely, the operator must
+prominently offer those users the Corresponding Source of that modified version
+(section 13). The in-app `/legal` page is that offer point; deployments must point
+`NEXT_PUBLIC_SOURCE_URL` at the repository of the version actually being served.

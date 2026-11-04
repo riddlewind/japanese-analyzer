@@ -190,6 +190,8 @@ Code previously released under MIT, including `mit-final` (`fb57ddc`), retains i
 
 Commercial use is permitted. When distributing covered works or offering a modified version over a network, provide the corresponding source as required by the license.
 
+The `/legal` page in the app is the section 13 source entry point; set `SOURCE_URL` to the repository of the version you actually serve. Object-code distributions should include [SOURCE](./SOURCE), and third-party notices (including the bundled font licenses) are in [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md). Run `npm run check:license` to verify all of this still holds.
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=cokice/japanese-analyzer&type=Date)](https://www.star-history.com/#cokice/japanese-analyzer&Date)

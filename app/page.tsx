@@ -1,5 +1,9 @@
 'use client';
 
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
+
 import { browserStorage } from './utils/storage';
 
 import { useLanguage } from './contexts/LanguageContext';
@@ -746,6 +750,11 @@ export default function Home() {
           <button type="button" className="footer-changelog-link" onClick={changelog.open}>
             {t("更新日志")}
           </button>
+          {/* AGPL-3.0 §13：向所有网络交互用户显著提供对应源码的获取方式。 */}
+          {' · '}
+          <a href="/legal" className="footer-changelog-link">
+            {t("源代码与许可证 (AGPL-3.0)")}
+          </a>
         </footer>
 
         {/* 设置模态框 */}

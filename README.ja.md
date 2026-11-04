@@ -192,6 +192,8 @@ npm run build        # 本番ビルド
 
 AGPL は商用利用を認めています。対象作品の配布や、変更したバージョンをネットワーク経由で提供する場合は、ライセンスの条件に従い対応するソースコードを提供してください。
 
+アプリ内の `/legal` ページが第 13 条のソース提供窓口です。改変版を配備する場合は `SOURCE_URL` を実際に配備するリポジトリへ向けてください。オブジェクトコード形式で配布する場合は [SOURCE](./SOURCE) を同梱し、第三者に関する表示（同梱フォントのライセンスを含む）は [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md) にまとめています。`npm run check:license` でこれらが保たれているか確認できます。
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=cokice/japanese-analyzer&type=Date)](https://www.star-history.com/#cokice/japanese-analyzer&Date)

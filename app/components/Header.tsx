@@ -1,5 +1,9 @@
 'use client';
 
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2025-2026 Howen and contributors
+
+
 import { useLanguage } from '../contexts/LanguageContext';
 import Image from 'next/image';
 import type { AIProvider } from '../services/api';
@@ -56,11 +60,11 @@ export default function Header({ aiProvider, onSettingsClick, onChangelogClick, 
           <ProviderLogo provider={aiProvider} className="h-4 w-4 sm:h-5 sm:w-5" />
           <span>{providerLabel}</span>
         </span>
+        {/* AGPL-3.0 第 13 条要求的源码入口：指向 /legal，由该页给出对应源码地址与许可证正文。 */}
         <a
-          href="https://github.com/cokice/japanese-analyzer"
-          target="_blank"
-          rel="noopener noreferrer"
-          title={t("GitHub 仓库")}
+          href="/legal"
+          title={t("源代码与许可证 (AGPL-3.0)")}
+          aria-label={t("源代码与许可证 (AGPL-3.0)")}
           className="grid h-10 w-10 place-items-center rounded-[10px] transition-colors hover:text-[var(--primary)]"
           style={{ color: 'var(--ink-2)' }}
         >
