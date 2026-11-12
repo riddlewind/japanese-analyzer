@@ -10,7 +10,8 @@ import './wordDetailContext.test';
 import './wordDetailDictionary.test';
 import { runLocalOutputTests } from './localOutput.test';
 import { runRequestMetricsTests } from './requestMetrics.test';
-import { runCorpusTests } from './corpus.test';
+// [已关闭] 语料检索（DeepSeek Search）下线，路由测试随之停跑；恢复时解注释这两处。
+// import { runCorpusTests } from './corpus.test';
 import { runChangelogTests } from './changelog.test';
 import {
   DEFAULT_AI_PROVIDER,
@@ -1003,7 +1004,7 @@ Promise.all([
   .then(runLocalOutputTests)
   .then(runRequestMetricsTests)
   .then(runOpenAIProxyErrorBodyTests)
-  .then(runCorpusTests)
+  // .then(runCorpusTests)
   .then(runChangelogTests)
   .then(() => {
     console.log('All tests passed');

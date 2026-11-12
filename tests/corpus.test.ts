@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2025-2026 Howen and contributors
 
+// [已关闭] 语料检索（DeepSeek Search）已下线，路由返回 403，本文件的集成用例不再随 npm test 跑。
+// 恢复功能后，把 tests/api.test.ts 里被注释的 runCorpusTests 解注释即可。
+
 import assert from 'node:assert/strict';
 import { NextRequest } from 'next/server';
 import { buildCorpusQuery, rankCorpusHits, sanitizeCorpusTerm } from '../app/lib/corpusQuery';

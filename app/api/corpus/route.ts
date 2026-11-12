@@ -22,6 +22,13 @@ import { createEmptyCorpusResult, type CorpusLookupResult } from '../../lib/corp
 // 搜索 + 归纳两个上游串行，别让平台默认超时把中间结果掐掉。
 export const maxDuration = 60;
 
+/**
+ * [已关闭] DeepSeek Search / Fetch 接口不再对外开放。
+ * 这里保留完整实现，只把入口挡住：要恢复功能，把 CORPUS_API_DISABLED 改成 false，
+ * 并解注释 app/page.tsx 里标注 [已关闭] 的片段即可。
+ */
+const CORPUS_API_DISABLED = true;
+
 const CORPUS_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 // 没查到例句的结果短存：用户换个词或过一会儿重试时不该被旧空结果挡住。
 const CORPUS_EMPTY_CACHE_TTL_MS = 10 * 60 * 1000;
@@ -69,6 +76,8 @@ function getSearchApiKey(req: NextRequest): string {
 
 /** 前端用它决定要不要显示「查真实语料」入口。 */
 export async function GET(req: NextRequest) {
+  if (CORPUS_API_DISABLED) return NextResponse.json({ available: false });
+
   const authError = requireApiSession(req);
   if (authError) return authError;
 
@@ -77,6 +86,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  if (CORPUS_API_DISABLED) {
+    return NextResponse.json(
+      { error: { message: '语料检索功能已关闭。', code: 'CORPUS_DISABLED' } },
+      { status: 403 }
+    );
+  }
+
   try {
     const locale = normalizeLocale(req.headers.get('X-App-Locale'));
     const authError = requireApiSession(req);

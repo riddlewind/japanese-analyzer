@@ -421,6 +421,7 @@ export default function WordDetailPanel({
             </div>
           </DetailSection>
         )}
+        {/* [已关闭] 真实语料区块：调用方不再传 corpusAvailable/onLookupCorpus，整块不渲染。恢复时解开 page.tsx 的注释即可。 */}
         {corpusAvailable && onLookupCorpus && !isStreamLoading && (
           <DetailSection label={t("真实语料")}>
             {corpusState === 'idle' && (
