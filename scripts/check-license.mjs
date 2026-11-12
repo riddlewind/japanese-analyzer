@@ -104,7 +104,29 @@ const runnerStage = dockerfile.slice(dockerfile.indexOf('AS runner'));
 expect(/ARG SOURCE_URL/.test(runnerStage), 'Dockerfile runner 阶段未重新声明 SOURCE_URL，运行时无法覆盖源码地址');
 expect(/ARG SOURCE_VERSION/.test(runnerStage), 'Dockerfile runner 阶段未重新声明 SOURCE_VERSION');
 
-// 5. 提示性检查（不阻断）
+// 5. 上游许可基线（上游改协议后，合并新代码前必须有人确认）
+read('.github/workflows/upstream-license-watch.yml');
+read('.github/upstream-license-issue.md');
+const baselineRaw = read('.github/upstream-license-baseline.json');
+try {
+  const baseline = JSON.parse(baselineRaw || '{}');
+  expect(
+    typeof baseline.licenseSha256 === 'string' && baseline.licenseSha256.length === 64,
+    '上游许可基线缺少 licenseSha256（定时检查将无法比对 LICENSE 正文）',
+  );
+  expect(
+    typeof baseline.licenseField === 'string' && baseline.licenseField.length > 0,
+    '上游许可基线缺少 licenseField',
+  );
+  expect(
+    baseline.licenseField === pkg.license,
+    `上游许可基线的 licenseField（${baseline.licenseField}）与 package.json 的 license（${pkg.license}）不一致；若是有意变更许可，请同步更新基线，否则定时检查会持续告警`,
+  );
+} catch {
+  failures.push('.github/upstream-license-baseline.json 不是合法的 JSON');
+}
+
+// 6. 提示性检查（不阻断）
 const envExample = read('.env.example');
 if (!envExample.includes('NEXT_PUBLIC_SOURCE_URL')) {
   warnings.push('.env.example 未说明 NEXT_PUBLIC_SOURCE_URL，部署方可能漏配源码地址');

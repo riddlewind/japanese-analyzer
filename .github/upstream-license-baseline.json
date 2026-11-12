@@ -1,0 +1,7 @@
+{
+  "upstream": "cokice/japanese-analyzer",
+  "licenseField": "AGPL-3.0-only",
+  "licenseSha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+  "recordedAt": "2026-11-04",
+  "note": "Fork 时上游的许可声明基线。上游改协议后此文件不会自动更新；确认变更已正确处理，再手工把新值写进来。"
+}

@@ -1,0 +1,105 @@
+name: Upstream license watch
+
+# 上游如果改了协议，必须在合并它的新提交之前知道。
+# 每次合并上游代码前，先看这里有没有未处理的 issue。
+#
+# 触发：每周一 03:00 UTC，或手动 Run workflow。
+# 变更检测：上游 package.json 的 license 字段、上游 LICENSE 正文哈希。
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  UPSTREAM: cokice/japanese-analyzer
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch upstream license files
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/up
+          for f in LICENSE package.json; do
+            if ! curl -fsSL --retry 3 "https://raw.githubusercontent.com/$UPSTREAM/HEAD/$f" -o "/tmp/up/$f"; then
+              echo "::error::无法获取上游 $f。上游仓库可能已改名、转为私有或删除，请人工确认 fork 关系的合规基础。"
+              exit 1
+            fi
+          done
+
+      - name: Compare against baseline
+        id: cmp
+        run: |
+          set -euo pipefail
+
+          baseline_sha=$(node -p "require('./.github/upstream-license-baseline.json').licenseSha256")
+          baseline_field=$(node -p "require('./.github/upstream-license-baseline.json').licenseField")
+          local_field=$(node -p "require('./package.json').license")
+          upstream_field=$(node -p "JSON.parse(require('fs').readFileSync('/tmp/up/package.json','utf8')).license || 'MISSING'")
+          actual_sha=$(sha256sum /tmp/up/LICENSE | awk '{print $1}')
+
+          echo "upstream license: $upstream_field"
+          echo "local license:    $local_field"
+          echo "upstream sha256:  $actual_sha"
+          echo "baseline sha256:  $baseline_sha"
+
+          notes=""
+          if [ "$upstream_field" != "$baseline_field" ]; then
+            notes="${notes}- 上游 \`package.json\` 的 license 从 \`$baseline_field\` 变成了 \`$upstream_field\`。"$'\n'
+          fi
+          if [ "$upstream_field" != "$local_field" ]; then
+            notes="${notes}- 上游声明 (\`$upstream_field\`) 与本仓库声明 (\`$local_field\`) 不一致。"$'\n'
+          fi
+          if [ "$actual_sha" != "$baseline_sha" ]; then
+            notes="${notes}- 上游 LICENSE 正文变了（\`$baseline_sha\` → \`$actual_sha\`）。即使仍是同一许可证，文本也可能换了版本或加了附加条款。"$'\n'
+          fi
+
+          if [ -n "$notes" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "notes<<__NOTES_EOF__"
+              printf '%s' "$notes"
+              echo "__NOTES_EOF__"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "上游许可声明与基线一致。"
+          fi
+
+      - name: Open or update issue
+        if: steps.cmp.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.cmp.outputs.notes }}
+        run: |
+          set -euo pipefail
+          title="上游许可变更待处理 / Upstream license change detected"
+
+          # 用模板渲染正文，避免在 shell heredoc 里拼 Markdown（反引号会被当命令替换）。
+          python3 - <<'PY'
+          import os, pathlib
+          template = pathlib.Path('.github/upstream-license-issue.md').read_text(encoding='utf-8')
+          body = (template
+                  .replace('{{UPSTREAM}}', os.environ.get('UPSTREAM', ''))
+                  .replace('{{NOTES}}', os.environ.get('NOTES', '').rstrip() + '\n\n'))
+          pathlib.Path('/tmp/issue-body.md').write_text(body, encoding='utf-8')
+          PY
+
+          # label 幂等创建，失败不阻断（可能无权限）。
+          gh label create license-watch --color B60205 --description "上游许可变更" --force >/dev/null 2>&1 || true
+
+          existing=$(gh issue list --label license-watch --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file /tmp/issue-body.md
+            echo "已评论到既有 issue #$existing"
+          else
+            gh issue create --title "$title" --label license-watch --body-file /tmp/issue-body.md
+          fi
