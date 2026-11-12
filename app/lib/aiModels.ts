@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2025-2026 Howen and contributors
 
-export type AIProvider = 'gemini' | 'deepseek' | 'sensenova' | 'qiniu';
+export type AIProvider = 'gemini' | 'deepseek' | 'sensenova' | 'qiniu' | 'gpt-god';
 export type GeminiModelName = 'gemini-flash-latest' | 'gemini-flash-lite-latest';
 export type DeepSeekModelName = 'deepseek-flash';
 export type SenseNovaModelName = 'sensenova-6.8-flash-lite';
 export type QiniuModelName = 'moonshotai/kimi-k3-free';
-export type AIModelName = SenseNovaModelName | GeminiModelName | DeepSeekModelName | QiniuModelName;
-export type ImageRecognitionModelName = SenseNovaModelName | GeminiModelName | typeof DEEPSEEK_VISION_MODEL_NAME | QiniuModelName;
+export type GptGodModelName = 'deepseek-v4.1-flash';
+export type AIModelName = SenseNovaModelName | GeminiModelName | DeepSeekModelName | QiniuModelName | GptGodModelName;
+export type ImageRecognitionModelName = SenseNovaModelName | GeminiModelName | typeof DEEPSEEK_VISION_MODEL_NAME | QiniuModelName | GptGodModelName;
 
 export const DEFAULT_AI_PROVIDER: AIProvider = 'sensenova';
 export const GEMINI_MODEL_NAME: GeminiModelName = 'gemini-flash-latest';
@@ -19,8 +20,16 @@ export const SENSENOVA_MODEL_NAME: SenseNovaModelName = 'sensenova-6.8-flash-lit
 export const SENSENOVA_MODEL_OPTIONS: SenseNovaModelName[] = ['sensenova-6.8-flash-lite'];
 export const QINIU_MODEL_NAME: QiniuModelName = 'moonshotai/kimi-k3-free';
 export const QINIU_MODEL_OPTIONS: QiniuModelName[] = ['moonshotai/kimi-k3-free'];
+export const GPT_GOD_MODEL_NAME: GptGodModelName = 'deepseek-v4.1-flash';
+export const GPT_GOD_MODEL_OPTIONS: GptGodModelName[] = ['deepseek-v4.1-flash'];
 export function normalizeAIProvider(value?: unknown): AIProvider {
-  return value === 'sensenova' || value === 'gemini' || value === 'deepseek' || value === 'qiniu' ? value : DEFAULT_AI_PROVIDER;
+  return value === 'sensenova'
+    || value === 'gemini'
+    || value === 'deepseek'
+    || value === 'qiniu'
+    || value === 'gpt-god'
+    ? value
+    : DEFAULT_AI_PROVIDER;
 }
 
 export function normalizeAIModel(
@@ -45,6 +54,12 @@ export function normalizeAIModel(
     return QINIU_MODEL_OPTIONS.includes(model as QiniuModelName)
       ? model as QiniuModelName
       : QINIU_MODEL_NAME;
+  }
+
+  if (provider === 'gpt-god') {
+    return GPT_GOD_MODEL_OPTIONS.includes(model as GptGodModelName)
+      ? model as GptGodModelName
+      : GPT_GOD_MODEL_NAME;
   }
 
   if (model === 'gemini-3.7-flash') return 'gemini-flash-latest';
@@ -72,6 +87,9 @@ export function getImageRecognitionModelName(
   }
   if (provider === 'qiniu') {
     return normalizeAIModel('qiniu', model) as QiniuModelName;
+  }
+  if (provider === 'gpt-god') {
+    return normalizeAIModel('gpt-god', model) as GptGodModelName;
   }
   return normalizeAIModel('gemini', model) as GeminiModelName;
 }

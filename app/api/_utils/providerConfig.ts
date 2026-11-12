@@ -18,6 +18,7 @@ export const GEMINI_OPENAI_API_URL = 'https://generativelanguage.googleapis.com/
 const DEEPSEEK_OPENAI_API_URL = 'https://api.deepseek.com/chat/completions';
 const SENSENOVA_OPENAI_API_URL = 'https://token.sensenova.cn/v1/chat/completions'
 const QINIU_OPENAI_API_URL = 'https://api.qnaigc.com/v1/chat/completions';
+const GPT_GOD_OPENAI_API_URL = 'https://api.gptgod.online/v1/chat/completions';
 
 export class ProviderConfigError extends Error {
   readonly status: number;
@@ -44,6 +45,9 @@ function getDefaultApiUrl(provider: AIProvider): string {
   if (provider === 'qiniu') {
     return process.env.QINIU_API_URL || QINIU_OPENAI_API_URL;
   }
+  if (provider === 'gpt-god') {
+    return process.env.GPTGOD_API_URL || GPT_GOD_OPENAI_API_URL;
+  }
   return process.env.GEMINI_API_URL || GEMINI_OPENAI_API_URL;
 }
 
@@ -56,6 +60,9 @@ function getDefaultApiKey(provider: AIProvider): string {
   }
   if (provider === 'qiniu') {
     return process.env.QINIU_API_KEY || '';
+  }
+  if (provider === 'gpt-god') {
+    return process.env.GPTGOD_API_KEY || '';
   }
   return process.env.GEMINI_API_KEY || '';
 }
@@ -231,7 +238,7 @@ export function getStructuredResponseFormat(
   provider: AIProvider,
   kind: StructuredOutputKind
 ): Record<string, unknown> {
-  if (provider === 'deepseek' || provider === 'sensenova' || provider === 'qiniu') {
+  if (provider === 'deepseek' || provider === 'sensenova' || provider === 'qiniu' || provider === 'gpt-god') {
     return { type: 'json_object' };
   }
 
@@ -281,6 +288,13 @@ export function withProviderControls(
       ...payload,
       ...responseFormat,
       // 七牛云 AI Token API 兼容 OpenAI，不需要特殊控制参数
+    };
+  }
+  if (provider === 'gpt-god') {
+    return {
+      ...payload,
+      ...responseFormat,
+      // gpt-god 是 OpenAI 兼容中转，不认 thinking 之类的厂商私有参数
     };
   }
   return {

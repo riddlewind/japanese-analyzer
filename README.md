@@ -58,7 +58,7 @@
 
 | 用途 | 默认 | 可选 |
 | --- | --- | --- |
-| 解析、翻译、释义 | 商汤日日新 `sensenova-6.8-flash-lite` | DeepSeek `deepseek-flash` / Gemini `gemini-flash-latest`、`gemini-flash-lite-latest` / 七牛云 `moonshotai/kimi-k3-free` |
+| 解析、翻译、释义 | 商汤日日新 `sensenova-6.8-flash-lite` | DeepSeek `deepseek-flash` / Gemini `gemini-flash-latest`、`gemini-flash-lite-latest` / 七牛云 `moonshotai/kimi-k3-free` / GPT-God `deepseek-v4.1-flash` |
 | 图片识别 | 与所选文本模型一致 | — |
 | 朗读 | Edge TTS | Gemini TTS（需要 Gemini Key） |
 
@@ -98,7 +98,8 @@ npm run dev
 | `DEEPSEEK_TOOLS_API_URL` | 可选。Search 接口地址，留空用 `https://api.deepseek.com` |
 | `GEMINI_API_KEY` | 可选。Gemini 文本模型、图片识别与 Gemini TTS |
 | `QINIU_API_KEY` | 可选。七牛云 AI 推理平台 |
-| `DEEPSEEK_API_URL` / `GEMINI_API_URL` / `SENSENOVA_API_URL` / `QINIU_API_URL` | 可选。OpenAI 兼容接口地址，留空用官方地址 |
+| `GPTGOD_API_KEY` | 可选。GPT-God 中转（`https://api.gptgod.online/v1`，模型 `deepseek-v4.1-flash`） |
+| `DEEPSEEK_API_URL` / `GEMINI_API_URL` / `SENSENOVA_API_URL` / `QINIU_API_URL` / `GPTGOD_API_URL` | 可选。OpenAI 兼容接口地址，留空用官方地址 |
 | `CODE` | 可选。访问密码，留空则不需要密码 |
 | `NEXT_PUBLIC_UMAMI_SRC` / `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | 可选。两个都填写后启用 Umami 统计 |
 
@@ -171,6 +172,7 @@ docker run -d \
   -e DEEPSEEK_API_KEY="" \
   -e GEMINI_API_KEY="" \
   -e QINIU_API_KEY="" \
+  -e GPTGOD_API_KEY="" \
   -e CODE="" \
   howenhowen/japanese-analyzer:latest
 ```

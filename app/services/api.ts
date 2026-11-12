@@ -27,6 +27,8 @@ export {
   SENSENOVA_MODEL_OPTIONS,
   QINIU_MODEL_NAME,
   QINIU_MODEL_OPTIONS,
+  GPT_GOD_MODEL_NAME,
+  GPT_GOD_MODEL_OPTIONS,
   getImageRecognitionModelName,
   getModelName,
   normalizeAIModel,
@@ -39,6 +41,7 @@ export type {
   GeminiModelName,
   SenseNovaModelName,
   QiniuModelName,
+  GptGodModelName,
 } from '../lib/aiModels';
 export type { CorpusExample, CorpusLookupResult, CorpusSource } from '../lib/corpusTypes';
 
@@ -94,6 +97,7 @@ export interface StoredAISettings {
   deepseekApiKey: string;
   sensenovaApiKey: string;
   qiniuApiKey: string;
+  gptGodApiKey: string;
   deepseekThinkingEnabled: boolean;
 }
 
@@ -161,6 +165,7 @@ export function loadAISettingsFromStorage(storage: StorageLike): StoredAISetting
     deepseekApiKey: storage.getItem('deepseekApiKey') || '',
     sensenovaApiKey: storage.getItem('sensenovaApiKey') || '',
     qiniuApiKey: storage.getItem('qiniuApiKey') || '',
+    gptGodApiKey: storage.getItem('gptGodApiKey') || '',
     deepseekThinkingEnabled: false,
   };
 }

@@ -35,6 +35,7 @@
    - `DEEPSEEK_API_KEY`：DeepSeek 的解析、翻译与图片识别
    - `GEMINI_API_KEY`：Gemini 模型和 Gemini 朗读
    - `QINIU_API_KEY`：七牛云 AI 推理平台
+   - `GPTGOD_API_KEY`：GPT-God 中转（模型 `deepseek-v4.1-flash`）
 3. **可选项**，没有就跳过：
    - 访问密码 `CODE`：设置后打开网站需要先输入密码
    - 域名：需要 HTTPS 访问时提供（仅 A）
@@ -71,6 +72,7 @@ SENSENOVA_API_KEY=
 DEEPSEEK_API_KEY=
 GEMINI_API_KEY=
 QINIU_API_KEY=
+GPTGOD_API_KEY=
 CODE=
 ```
 
@@ -114,7 +116,7 @@ curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3002
 Vercel 需要用户本人登录授权，你负责指导：
 
 1. 让用户打开 <https://vercel.com/new/clone?repository-url=https://github.com/cokice/japanese-analyzer> 并导入仓库。
-2. 在 `Settings → Environment Variables` 添加 `SENSENOVA_API_KEY`（默认供应商），以及用户选用的其他供应商 Key（`DEEPSEEK_API_KEY`、`GEMINI_API_KEY`、`QINIU_API_KEY`）和可选的 `CODE`。
+2. 在 `Settings → Environment Variables` 添加 `SENSENOVA_API_KEY`（默认供应商），以及用户选用的其他供应商 Key（`DEEPSEEK_API_KEY`、`GEMINI_API_KEY`、`QINIU_API_KEY`、`GPTGOD_API_KEY`）和可选的 `CODE`。
 3. 重新部署，打开 Vercel 分配的域名验证。
 
 如果用户已经安装并登录了 `vercel` CLI，也可以在仓库目录执行 `vercel`，用 `vercel env add` 添加变量后 `vercel --prod`。

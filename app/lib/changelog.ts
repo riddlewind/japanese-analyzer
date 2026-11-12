@@ -21,6 +21,35 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG_ENTRIES: readonly ChangelogEntry[] = [
   {
+    id: '2026-11-12-gpt-god',
+    date: '2026-11-12',
+    kind: 'new',
+    title: {
+      'zh-CN': '新增 GPT-God 模型服务',
+      'zh-TW': '新增 GPT-God 模型服務',
+      en: 'GPT-God provider',
+      ko: 'GPT-God 제공자 추가',
+    },
+    items: {
+      'zh-CN': [
+        '设置里可以把 GPT-God 选为模型服务商，默认模型 deepseek-v4.1-flash',
+        '走 OpenAI 兼容接口，密钥在设置里单独保存，服务端也可用 GPTGOD_API_KEY 统一配置',
+      ],
+      'zh-TW': [
+        '設定裡可以把 GPT-God 選為模型服務商，預設模型 deepseek-v4.1-flash',
+        '走 OpenAI 相容介面，金鑰在設定裡單獨保存，服務端也可用 GPTGOD_API_KEY 統一設定',
+      ],
+      en: [
+        'GPT-God can now be selected as a model provider, using deepseek-v4.1-flash by default',
+        'It speaks the OpenAI-compatible API; keys are stored per provider, or set GPTGOD_API_KEY on the server',
+      ],
+      ko: [
+        '설정에서 GPT-God를 모델 제공자로 선택할 수 있으며 기본 모델은 deepseek-v4.1-flash입니다',
+        'OpenAI 호환 API를 사용하며, 키는 제공자별로 저장되고 서버에서는 GPTGOD_API_KEY로 설정할 수 있습니다',
+      ],
+    },
+  },
+  {
     id: '2026-10-18-corpus',
     date: '2026-10-18',
     kind: 'new',

@@ -53,7 +53,7 @@ export class DailySentenceUnavailableError extends Error {}
 
 // 服务器自发调用没有请求上下文，只能按「哪家配了服务器 Key 就用哪家」来挑：
 // 先默认供应商，再按下面的顺序回退，避免默认供应商没配 Key 时整句功能直接失效。
-const PROVIDER_FALLBACK_ORDER: AIProvider[] = ['sensenova', 'deepseek', 'gemini', 'qiniu'];
+const PROVIDER_FALLBACK_ORDER: AIProvider[] = ['sensenova', 'deepseek', 'gemini', 'qiniu', 'gpt-god'];
 
 export function getProviderFallbackOrder(): AIProvider[] {
   return [

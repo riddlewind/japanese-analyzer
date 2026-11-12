@@ -18,6 +18,8 @@ import {
   DEEPSEEK_VISION_MODEL_NAME,
   DEEPSEEK_MODEL_OPTIONS,
   GEMINI_MODEL_OPTIONS,
+  GPT_GOD_MODEL_NAME,
+  GPT_GOD_MODEL_OPTIONS,
   getApiEndpoint,
   getImageRecognitionModelName,
   getModelName,
@@ -153,6 +155,8 @@ assert.deepStrictEqual(GEMINI_MODEL_OPTIONS, ['gemini-flash-latest', 'gemini-fla
 assert.deepStrictEqual(DEEPSEEK_MODEL_OPTIONS, ['deepseek-flash']);
 assert.deepStrictEqual(QINIU_MODEL_OPTIONS, ['moonshotai/kimi-k3-free']);
 assert.strictEqual(QINIU_MODEL_NAME, 'moonshotai/kimi-k3-free');
+assert.deepStrictEqual(GPT_GOD_MODEL_OPTIONS, ['deepseek-v4.1-flash']);
+assert.strictEqual(GPT_GOD_MODEL_NAME, 'deepseek-v4.1-flash');
 assert.strictEqual(DEEPSEEK_VISION_MODEL_NAME, 'deepseek-flash');
 assert.strictEqual(getImageRecognitionModelName('deepseek'), DEEPSEEK_VISION_MODEL_NAME);
 assert.strictEqual(getImageRecognitionModelName('deepseek', 'deepseek-flash'), DEEPSEEK_VISION_MODEL_NAME);
@@ -165,9 +169,16 @@ assert.strictEqual(
   QINIU_MODEL_NAME,
   '七牛供应商的图片识别必须使用七牛自己的模型名，不能落到 Gemini 分支'
 );
+assert.strictEqual(getImageRecognitionModelName('gpt-god'), GPT_GOD_MODEL_NAME);
+assert.strictEqual(
+  getImageRecognitionModelName('gpt-god', 'gemini-flash-latest'),
+  GPT_GOD_MODEL_NAME,
+  'gpt-god 的图片识别也要走自己的模型名'
+);
 assert.strictEqual(normalizeAIProvider('gemini'), 'gemini');
 assert.strictEqual(normalizeAIProvider('deepseek'), 'deepseek');
 assert.strictEqual(normalizeAIProvider('qiniu'), 'qiniu');
+assert.strictEqual(normalizeAIProvider('gpt-god'), 'gpt-god');
 assert.strictEqual(normalizeAIProvider('unknown'), 'sensenova');
 assert.strictEqual(normalizeAIModel('deepseek', 'deepseek-flash'), 'deepseek-flash');
 assert.strictEqual(normalizeAIModel('deepseek', 'unknown'), 'deepseek-flash');
@@ -180,6 +191,7 @@ assert.strictEqual(normalizeAIModel('gemini', 'deepseek-flash'), 'gemini-flash-l
 assert.strictEqual(normalizeServerAIProvider('gemini'), 'gemini');
 assert.strictEqual(normalizeServerAIProvider('deepseek'), 'deepseek');
 assert.strictEqual(normalizeServerAIProvider('qiniu'), 'qiniu');
+assert.strictEqual(normalizeServerAIProvider('gpt-god'), 'gpt-god');
 assert.strictEqual(normalizeServerAIProvider('unknown'), 'sensenova');
 assert.strictEqual(getModelName('deepseek'), 'deepseek-flash');
 assert.strictEqual(getModelName('deepseek', 'deepseek-v4-pro'), 'deepseek-flash');
@@ -439,6 +451,16 @@ assert.deepStrictEqual(getRequestProviderPayload('qiniu', 'moonshotai/kimi-other
   model: 'moonshotai/kimi-k3-free',
 });
 
+assert.deepStrictEqual(getRequestProviderPayload('gpt-god'), {
+  provider: 'gpt-god',
+  model: 'deepseek-v4.1-flash',
+});
+
+assert.deepStrictEqual(getRequestProviderPayload('gpt-god', 'unknown-model'), {
+  provider: 'gpt-god',
+  model: 'deepseek-v4.1-flash',
+});
+
 assert.deepStrictEqual(withProviderControls('gemini', { model: 'gemini-flash-latest' }), {
   model: 'gemini-flash-latest',
   reasoning_effort: 'low',
@@ -485,6 +507,19 @@ assert.deepStrictEqual(withProviderControls(
   { structuredOutput: 'analysisTokens' }
 ), {
   model: 'moonshotai/kimi-k3-free',
+  response_format: { type: 'json_object' },
+});
+
+assert.deepStrictEqual(getStructuredResponseFormat('gpt-god', 'analysisTokens'), {
+  type: 'json_object',
+});
+
+assert.deepStrictEqual(withProviderControls(
+  'gpt-god',
+  { model: 'deepseek-v4.1-flash' },
+  { structuredOutput: 'analysisTokens', enableThinking: true }
+), {
+  model: 'deepseek-v4.1-flash',
   response_format: { type: 'json_object' },
 });
 
@@ -814,6 +849,7 @@ assert.deepStrictEqual(migratedSettings, {
   deepseekApiKey: 'deepseek-key',
   sensenovaApiKey: '',
   qiniuApiKey: '',
+  gptGodApiKey: '',
   deepseekThinkingEnabled: false,
 });
 assert.strictEqual(migratedStorage.getItem('geminiApiKey'), 'legacy-gemini-key');
@@ -830,6 +866,7 @@ assert.strictEqual(defaultSettings.geminiApiKey, '');
 assert.strictEqual(defaultSettings.deepseekApiKey, '');
 assert.strictEqual(defaultSettings.sensenovaApiKey, '');
 assert.strictEqual(defaultSettings.qiniuApiKey, '');
+assert.strictEqual(defaultSettings.gptGodApiKey, '');
 assert.strictEqual(defaultSettings.deepseekThinkingEnabled, false);
 
 const geminiLiteStorage = new MemoryStorage({

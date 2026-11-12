@@ -6,7 +6,7 @@
 
 import { useLanguage } from '../contexts/LanguageContext';
 import { useEffect, useState } from 'react';
-import { DEEPSEEK_MODEL_OPTIONS, GEMINI_MODEL_OPTIONS, QINIU_MODEL_OPTIONS, SENSENOVA_MODEL_OPTIONS, getModelName, type AIModelName, type AIProvider } from '../services/api';
+import { DEEPSEEK_MODEL_OPTIONS, GEMINI_MODEL_OPTIONS, GPT_GOD_MODEL_OPTIONS, QINIU_MODEL_OPTIONS, SENSENOVA_MODEL_OPTIONS, getModelName, type AIModelName, type AIProvider } from '../services/api';
 import { Icon } from './Icons';
 import { ProviderLogo, PROVIDER_LABELS } from './ProviderLogo';
 import { Switch } from '@/components/ui/switch';
@@ -18,6 +18,7 @@ interface SettingsPayload {
   deepseekApiKey: string;
   sensenovaApiKey: string;
   qiniuApiKey: string;
+  gptGodApiKey: string;
   deepseekThinkingEnabled: boolean;
   useStream: boolean;
 }
@@ -29,6 +30,7 @@ interface SettingsModalProps {
   deepseekApiKey: string;
   sensenovaApiKey: string;
   qiniuApiKey: string;
+  gptGodApiKey: string;
   useStream: boolean;
   onSaveSettings: (settings: SettingsPayload) => void;
   isModalOpen: boolean;
@@ -42,6 +44,7 @@ export default function SettingsModal({
   deepseekApiKey,
   sensenovaApiKey,
   qiniuApiKey,
+  gptGodApiKey,
   useStream,
   onSaveSettings,
   isModalOpen,
@@ -54,6 +57,7 @@ export default function SettingsModal({
   const [deepseekKey, setDeepseekKey] = useState(deepseekApiKey);
   const [sensenovaKey, setSensenovaKey]= useState(sensenovaApiKey);
   const [qiniuKey, setQiniuKey]= useState(qiniuApiKey);
+  const [gptGodKey, setGptGodKey] = useState(gptGodApiKey);
   const [streamEnabled, setStreamEnabled] = useState(useStream);
   const [status, setStatus] = useState('');
 
@@ -64,9 +68,10 @@ export default function SettingsModal({
     setDeepseekKey(deepseekApiKey);
     setSensenovaKey(sensenovaApiKey);
     setQiniuKey(qiniuApiKey);
+    setGptGodKey(gptGodApiKey);
     setStreamEnabled(useStream);
     setStatus('');
-  }, [aiProvider, aiModel, geminiApiKey, deepseekApiKey, sensenovaApiKey, qiniuApiKey, useStream, isModalOpen]);
+  }, [aiProvider, aiModel, geminiApiKey, deepseekApiKey, sensenovaApiKey, qiniuApiKey, gptGodApiKey, useStream, isModalOpen]);
 
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -79,6 +84,7 @@ export default function SettingsModal({
   deepseek: deepseekKey,
   sensenova: sensenovaKey,
   qiniu: qiniuKey,
+  'gpt-god': gptGodKey,
   };
   const currentApiKey = apiKeyByProvider[selectedProvider];
   const currentModelName = getModelName(selectedProvider, selectedModel);
@@ -87,6 +93,7 @@ export default function SettingsModal({
   deepseek: setDeepseekKey,
   sensenova: setSensenovaKey,
   qiniu: setQiniuKey,
+  'gpt-god': setGptGodKey,
   };
   const setCurrentApiKey = setApiKeyByProvider[selectedProvider];
   const modelOptionsByProvider: Record<AIProvider, readonly string[]> = {
@@ -94,6 +101,7 @@ export default function SettingsModal({
   deepseek: DEEPSEEK_MODEL_OPTIONS,
   sensenova: SENSENOVA_MODEL_OPTIONS,
   qiniu: QINIU_MODEL_OPTIONS,
+  'gpt-god': GPT_GOD_MODEL_OPTIONS,
   };
   const currentModelOptions = modelOptionsByProvider[selectedProvider];
 
@@ -105,6 +113,7 @@ export default function SettingsModal({
       deepseekApiKey: deepseekKey.trim(),
       sensenovaApiKey: sensenovaKey.trim(),
       qiniuApiKey: qiniuKey.trim(),
+      gptGodApiKey: gptGodKey.trim(),
       deepseekThinkingEnabled: false,
       useStream: streamEnabled,
     });
@@ -146,8 +155,8 @@ export default function SettingsModal({
             <label className="mb-2 block text-sm font-medium" style={{ color: 'var(--ink-2)' }}>
               {t("模型服务")}
             </label>
-            <div className="segmented-control grid grid-cols-2 gap-1 rounded-[12px] p-1 sm:grid-cols-4">
-              {(['gemini', 'deepseek', 'sensenova', 'qiniu'] as AIProvider[]).map((provider) => {
+            <div className="segmented-control grid grid-cols-2 gap-1 rounded-[12px] p-1 sm:grid-cols-3">
+              {(['gemini', 'deepseek', 'sensenova', 'qiniu', 'gpt-god'] as AIProvider[]).map((provider) => {
                 const active = selectedProvider === provider;
                 return (
                   <button

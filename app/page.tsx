@@ -20,7 +20,8 @@ import AIChat from './components/AIChat';
 import ReasoningStream from './components/ReasoningStream';
 import WordDetailPanel from './components/WordDetailPanel';
 import { useWordDetail } from './hooks/useWordDetail';
-import { useCorpusLookup } from './hooks/useCorpusLookup';
+// [已关闭] DeepSeek Search/Fetch 语料检索入口。恢复时解注释下面这行与本文件内标注 [已关闭] 的片段。
+// import { useCorpusLookup } from './hooks/useCorpusLookup';
 import { useChangelog } from './hooks/useChangelog';
 import { useAnalysisHistory } from './hooks/useAnalysisHistory';
 import { AnalyzeStreamParser } from './utils/analyzeStreamParser';
@@ -74,6 +75,7 @@ export default function Home() {
   const [deepseekApiKey, setDeepseekApiKey] = useState('');
   const [sensenovaApiKey, setSensenovaApiKey] = useState('');
   const [qiniuApiKey, setQiniuApiKey] = useState('');
+  const [gptGodApiKey, setGptGodApiKey] = useState('');
   const [deepseekThinkingEnabled, setDeepseekThinkingEnabled] = useState(false);
   const [hasDeepseekReasoning, setHasDeepseekReasoning] = useState(false);
   const hasDeepseekReasoningRef = useRef(false);
@@ -99,6 +101,7 @@ export default function Home() {
   deepseek: deepseekApiKey,
   sensenova: sensenovaApiKey,
   qiniu: qiniuApiKey,
+  'gpt-god': gptGodApiKey,
   };
   const userApiKey = apiKeyByProvider[aiProvider];
 
@@ -115,15 +118,16 @@ export default function Home() {
     clearWordDetail,
   } = useWordDetail({ userApiKey, aiProvider, aiModel, useStream });
 
-  const corpusLookup = useCorpusLookup({
-    word: wordDetail?.originalWord || '',
-    sentence: currentSentence,
-    pos: wordDetail?.pos,
-    userApiKey,
-    aiProvider,
-    aiModel,
-    searchApiKey: deepseekApiKey,
-  });
+  // [已关闭] 语料检索（DeepSeek Search API）已下线，恢复时解注释以下整段。
+  // const corpusLookup = useCorpusLookup({
+  //   word: wordDetail?.originalWord || '',
+  //   sentence: currentSentence,
+  //   pos: wordDetail?.pos,
+  //   userApiKey,
+  //   aiProvider,
+  //   aiModel,
+  //   searchApiKey: deepseekApiKey,
+  // });
 
   useEffect(() => {
     analysisAbortControllerRef.current?.abort('language-change');
@@ -196,6 +200,7 @@ export default function Home() {
     setDeepseekApiKey(storedAISettings.deepseekApiKey);
     setSensenovaApiKey(storedAISettings.sensenovaApiKey);
     setQiniuApiKey(storedAISettings.qiniuApiKey);
+    setGptGodApiKey(storedAISettings.gptGodApiKey);
     setDeepseekThinkingEnabled(storedAISettings.deepseekThinkingEnabled);
     setTtsProvider(storedTtsProvider);
 
@@ -214,6 +219,7 @@ export default function Home() {
     deepseekThinkingEnabled: boolean;
     sensenovaApiKey: string;
     qiniuApiKey: string;
+    gptGodApiKey: string;
     useStream: boolean;
   }) => {
     browserStorage.setItem('aiProvider', settings.aiProvider);
@@ -222,6 +228,7 @@ export default function Home() {
     browserStorage.setItem('deepseekApiKey', settings.deepseekApiKey);
     browserStorage.setItem('sensenovaApiKey', settings.sensenovaApiKey);  // ← 加
     browserStorage.setItem('qiniuApiKey', settings.qiniuApiKey);
+    browserStorage.setItem('gptGodApiKey', settings.gptGodApiKey);
     browserStorage.setItem('deepseekThinkingEnabled', settings.deepseekThinkingEnabled.toString());
     browserStorage.setItem('useStream', settings.useStream.toString());
     browserStorage.removeItem('geminiApiUrl');
@@ -237,6 +244,7 @@ export default function Home() {
     setDeepseekApiKey(settings.deepseekApiKey);
     setSensenovaApiKey(settings.sensenovaApiKey);
     setQiniuApiKey(settings.qiniuApiKey);
+    setGptGodApiKey(settings.gptGodApiKey);
     setDeepseekThinkingEnabled(settings.deepseekThinkingEnabled);
     setUseStream(settings.useStream);
     reasoningTextStore.reset();
@@ -568,20 +576,21 @@ export default function Home() {
   const hasWordDetail = (selectedIndex !== null || selectedRange !== null)
     && (isWordDetailLoading || isWordDetailStreaming || wordDetail !== null || !!wordDetailStreamError);
 
-  // 「解析这句」把检索到的真实例句送进主输入流程，搜索只是入口，解析才是归宿。
-  const handleAnalyzeCorpusExample = (text: string) => {
-    setSelectedIndex(null);
-    setSelectedRange(null);
-    void handleAnalyze(text);
-  };
+  // [已关闭] 「解析这句」把真实例句送回主流程的入口，随语料检索一起下线。
+  // const handleAnalyzeCorpusExample = (text: string) => {
+  //   setSelectedIndex(null);
+  //   setSelectedRange(null);
+  //   void handleAnalyze(text);
+  // };
 
+  // [已关闭] 语料面板属性。保持空对象，两个调用点仍可安全展开；恢复时把下面字段解注释即可。
   const corpusPanelProps = {
-    corpusAvailable: corpusLookup.available,
-    corpusState: corpusLookup.state,
-    corpusResult: corpusLookup.result,
-    corpusError: corpusLookup.error,
-    onLookupCorpus: corpusLookup.lookup,
-    onAnalyzeExample: handleAnalyzeCorpusExample,
+    // corpusAvailable: corpusLookup.available,
+    // corpusState: corpusLookup.state,
+    // corpusResult: corpusLookup.result,
+    // corpusError: corpusLookup.error,
+    // onLookupCorpus: corpusLookup.lookup,
+    // onAnalyzeExample: handleAnalyzeCorpusExample,
   };
 
   const wordDetailPanel = (
@@ -765,6 +774,7 @@ export default function Home() {
           deepseekApiKey={deepseekApiKey}
           sensenovaApiKey={sensenovaApiKey}
           qiniuApiKey={qiniuApiKey}
+          gptGodApiKey={gptGodApiKey}
           useStream={useStream}
           onSaveSettings={handleSaveSettings}
           isModalOpen={isSettingsModalOpen}
